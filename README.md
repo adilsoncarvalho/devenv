@@ -13,6 +13,11 @@ The playbook automates the installation and configuration of development tools a
   - Installs Git via Homebrew if not present
   - Provides status information about the installed Git version
 
+- GitHub CLI installation:
+  - Installs GitHub CLI (gh) via Homebrew on macOS
+  - Installs GitHub CLI via apt on Ubuntu
+  - Provides installation status and authentication instructions
+
 ## Repository Structure
 
 ```

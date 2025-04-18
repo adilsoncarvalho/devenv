@@ -17,6 +17,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+    env:
+      GH_TOKEN: ${{ github.token }}
 
     steps:
     - uses: actions/checkout@v4
@@ -32,11 +34,19 @@ jobs:
         pip install ansible
 
     - name: Run Playbook
-      run: ansible-playbook -i inventory.yml playbook.yml
+      run: |
+        ansible-playbook -i inventory.yml playbook.yml --extra-vars "github_token=${{ github.token }}"
 
     - name: Verify Git Installation
       run: |
         git --version
         if [ "${{ runner.os }}" == "macOS" ]; then
           which git
-        fi 
+        fi
+
+    - name: Verify GitHub CLI Installation and Auth
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        gh --version
+        gh auth status 
