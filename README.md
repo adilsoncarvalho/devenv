@@ -67,3 +67,16 @@ ansible-playbook -i inventory.yml playbook.yml
 - Python 3.x
 - Ansible
 - For macOS: Homebrew (will be installed if missing) 
+
+## CI Requirements
+
+The GitHub Actions workflow requires a Personal Access Token (PAT) with the following scopes:
+- `repo` - For repository access
+- `read:org` - For organization access
+- `admin:public_key` - For managing SSH keys
+- `admin:gpg_key` - For managing GPG keys
+
+To set up the PAT:
+1. Create a new [Personal Access Token (classic)](https://github.com/settings/tokens) in your GitHub account settings
+2. Select the required scopes mentioned above
+3. Add the token as a repository secret named `GH_TOKEN` in your repository settings 

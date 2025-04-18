@@ -1,11 +1,21 @@
 ---
 - name: Minimal Ansible Playbook
   hosts: all
+  vars:
+    is_ci: "{{ lookup('env', 'CI') | default(false) | bool }}"
   vars_prompt:
     - name: github_token
-      prompt: "Enter your GitHub Personal Access Token (classic) with 'repo', 'read:org' scopes (press Enter to skip if already configured)"
+      prompt: "Enter your GitHub Personal Access Token (classic) with 'repo', 'read:org', and 'write:gpg_key' scopes (press Enter to skip if already configured)"
       private: yes
-      default: ""
+      default: "{{ lookup('env', 'GH_TOKEN') | default('') }}"
+    - name: user_name
+      prompt: "Enter your name for GPG key (press Enter to use USER_NAME env var)"
+      private: no
+      default: "{{ lookup('env', 'USER_NAME') | default(lookup('env', 'USER')) }}"
+    - name: user_email
+      prompt: "Enter your email for GPG key (press Enter to use USER_EMAIL env var)"
+      private: no
+      default: "{{ lookup('env', 'USER_EMAIL') | default(lookup('env', 'USER') + '@users.noreply.github.com') }}"
 
   tasks:
     - name: Get Git version info
@@ -61,6 +71,90 @@
     - name: Show Git version
       debug:
         msg: "Using Git: {{ git_path.stdout }} ({{ git_version.stdout }})"
+
+    - name: Install GPG on macOS
+      homebrew:
+        name: gnupg
+        state: latest
+      when: ansible_os_family == "Darwin"
+
+    - name: Install GPG on Ubuntu
+      apt:
+        name: gnupg
+        state: latest
+      when: ansible_os_family == "Debian"
+      become: true
+
+    - name: Get GPG version
+      command: gpg --version
+      register: gpg_version
+      changed_when: false
+
+    - name: List GPG keys
+      command: gpg --list-secret-keys --keyid-format LONG
+      register: gpg_keys
+      changed_when: false
+      ignore_errors: true
+
+    - name: Generate GPG key if none exists
+      block:
+        - name: Create GPG key configuration file
+          copy:
+            dest: /tmp/gpg-key-gen.conf
+            content: |
+              Key-Type: RSA
+              Key-Length: 4096
+              Name-Real: {{ user_name }}
+              Name-Email: {{ user_email }}
+              Expire-Date: 0
+              %no-protection
+              %commit
+            mode: '0600'
+
+        - name: Generate GPG key
+          command: gpg --batch --generate-key /tmp/gpg-key-gen.conf
+          register: gpg_gen_key
+
+        - name: Clean up GPG key configuration
+          file:
+            path: /tmp/gpg-key-gen.conf
+            state: absent
+      when: gpg_keys.rc != 0 or gpg_keys.stdout == ""
+
+    - name: Get GPG key ID
+      shell: gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2
+      register: gpg_key_id
+      changed_when: false
+
+    - name: Export GPG public key
+      command: gpg --armor --export {{ gpg_key_id.stdout }}
+      register: gpg_public_key
+      changed_when: false
+      when: gpg_key_id.stdout != ""
+
+    - name: Configure Git to use GPG key
+      command: "{{ item }}"
+      loop:
+        - git config --global user.signingkey {{ gpg_key_id.stdout }}
+        - git config --global commit.gpgsign true
+      when: gpg_key_id.stdout != ""
+
+    - name: Check if GPG key is on GitHub
+      command: gh gpg-key list
+      register: github_gpg_keys
+      changed_when: false
+      ignore_errors: true
+
+    - name: Add GPG key to GitHub if not present
+      shell: |
+        echo "{{ gpg_public_key.stdout }}" | gh gpg-key add -
+      register: added_gpg_key
+      when: gpg_key_id.stdout != "" and (github_gpg_keys.rc != 0 or gpg_key_id.stdout not in github_gpg_keys.stdout)
+
+    - name: Remove GPG key from GitHub in CI environment
+      command: gh gpg-key delete {{ gpg_key_id.stdout }} --confirm
+      when: is_ci and gpg_key_id.stdout != "" and added_gpg_key.changed
+      ignore_errors: true
 
     - name: Example task
       debug:
@@ -127,7 +221,10 @@
           command: gh config set editor "code --wait"
 
         - name: Configure default browser
-          command: gh config set browser default
+          command: "{{ item }}"
+          loop:
+            - gh config set browser "{{ 'open' if ansible_os_family == 'Darwin' else 'xdg-open' }}"
+          when: not is_ci
 
         - name: Configure aliases
           command: "{{ item }}"
