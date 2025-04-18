@@ -1,0 +1,37 @@
+---
+- name: Check if Homebrew is installed
+  stat:
+    path: /opt/homebrew/bin/brew
+  register: brew_installed
+
+- name: Install Homebrew if not present
+  shell: |
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  args:
+    creates: /opt/homebrew/bin/brew
+  when: not brew_installed.stat.exists
+  become: yes
+  tags: [brew]
+
+- name: Add Homebrew to PATH
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    line: 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+    state: present
+    insertafter: '^# User configuration'
+  when: not brew_installed.stat.exists
+  tags: [brew]
+
+- name: Source Homebrew environment
+  shell: eval "$(/opt/homebrew/bin/brew shellenv)"
+  args:
+    executable: /bin/zsh
+  when: not brew_installed.stat.exists
+  tags: [brew]
+
+- name: Upgrade Homebrew if already installed
+  shell: brew update && brew upgrade
+  args:
+    executable: /bin/zsh
+  when: brew_installed.stat.exists
+  tags: [brew]

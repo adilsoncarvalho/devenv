@@ -18,6 +18,10 @@
       default: "{{ lookup('env', 'USER_EMAIL') | default(lookup('env', 'USER') + '@users.noreply.github.com') }}"
 
   tasks:
+    - name: Include Homebrew tasks
+      include_tasks: roles/common/tasks/brew.yml
+      tags: brew
+
     - name: Include Git tasks
       include_tasks: roles/common/tasks/git.yml
 
