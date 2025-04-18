@@ -2,6 +2,60 @@
 - name: Minimal Ansible Playbook
   hosts: all
   tasks:
+    - name: Get Git version info
+      command: git --version
+      register: git_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Check if Git is Apple version
+      set_fact:
+        is_apple_git: "{{ 'Apple Git' in git_version.stdout }}"
+      when: git_version.rc == 0
+
+    - name: Update Xcode Command Line Tools (if Apple Git is present)
+      command: xcode-select --install
+      when: is_apple_git is defined and is_apple_git
+      changed_when: false
+      ignore_errors: true
+
+    - name: Install Git using Homebrew (if no Git is present)
+      homebrew:
+        name: git
+        state: latest
+      when: git_version.rc != 0
+
+    - name: Show Git status
+      debug:
+        msg: |
+          Git status:
+          {% if git_version.rc == 0 %}
+          Version: {{ git_version.stdout }}
+          {% if is_apple_git %}
+          Type: Apple Git (updated via Xcode Command Line Tools)
+          {% else %}
+          Type: Homebrew Git
+          {% endif %}
+          {% else %}
+          Git is not installed
+          {% endif %}
+
+    - name: Ensure Homebrew bin directory is in PATH
+      lineinfile:
+        path: ~/.zshrc
+        line: 'export PATH="/opt/homebrew/bin:$PATH"'
+        create: yes
+      when: is_apple_git
+
+    - name: Get updated Git path
+      command: which git
+      register: git_path
+      changed_when: false
+
+    - name: Show Git version
+      debug:
+        msg: "Using Git: {{ git_path.stdout }} ({{ git_version.stdout }})"
+
     - name: Example task
       debug:
         msg: "Hello from Ansible!" 
