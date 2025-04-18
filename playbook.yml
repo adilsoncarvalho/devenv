@@ -221,7 +221,10 @@
           command: gh config set editor "code --wait"
 
         - name: Configure default browser
-          command: gh config set browser default
+          command: "{{ item }}"
+          loop:
+            - gh config set browser "{{ 'open' if ansible_os_family == 'Darwin' else 'xdg-open' }}"
+          when: not is_ci
 
         - name: Configure aliases
           command: "{{ item }}"
