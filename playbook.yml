@@ -148,11 +148,6 @@
               {% raw %}
               {{.Message}}
               {% endraw %}
-
-              ## Checklist
-              - [ ] Tests passing
-              - [ ] Documentation updated
-              - [ ] Code follows project standards
             mode: '0644'
             force: yes
 
