@@ -309,7 +309,7 @@
         create: yes
       when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
       register: plugins_config
-      failed_when: not plugins_config.changed and not plugins_config.found
+      failed_when: plugins_config.failed
 
     - name: Configure Oh My Zsh theme
       lineinfile:
@@ -319,19 +319,19 @@
         create: yes
       when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
       register: theme_config
-      failed_when: not theme_config.changed and not theme_config.found
+      failed_when: theme_config.failed
 
-    - name: Add custom aliases
-      blockinfile:
-        path: ~/.zshrc
-        block: |
+    - name: Create custom aliases file
+      copy:
+        dest: ~/.oh-my-zsh/custom/aliases.zsh
+        content: |
           # Custom aliases
           alias ll='ls -la'
           alias k='kubectl'
-        create: yes
+        mode: '0644'
       when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
       register: aliases_config
-      failed_when: not aliases_config.changed and not aliases_config.found
+      failed_when: aliases_config.failed
 
     - name: Set Zsh as default shell
       shell: chsh -s $(which zsh)
