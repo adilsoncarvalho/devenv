@@ -10,7 +10,6 @@
   args:
     creates: /opt/homebrew/bin/brew
   when: not brew_installed.stat.exists
-  become: yes
   tags: [brew]
 
 - name: Add Homebrew to PATH
