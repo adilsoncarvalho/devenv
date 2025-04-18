@@ -18,6 +18,13 @@ The playbook automates the installation and configuration of development tools a
   - Installs GitHub CLI via apt on Ubuntu
   - Provides installation status and authentication instructions
 
+- Zsh configuration:
+  - Installs Zsh if not present
+  - Installs and configures Oh My Zsh
+  - Sets up common plugins (git, gh, docker, kubectl, etc.)
+  - Configures custom aliases for common commands
+  - Sets Zsh as the default shell
+
 ## Repository Structure
 
 ```
