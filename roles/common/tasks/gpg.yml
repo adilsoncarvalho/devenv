@@ -69,8 +69,11 @@
 - name: Configure Git to use GPG key
   command: "{{ item }}"
   loop:
+    - git config --global user.name "{{ user_name }}"
+    - git config --global user.email "{{ user_email }}"
     - git config --global user.signingkey {{ gpg_key_id.stdout }}
     - git config --global commit.gpgsign true
+    - git config --global tag.gpgsign true
   when: gpg_key_id.stdout != ""
   tags: [gpg]
 
