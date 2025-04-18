@@ -113,13 +113,13 @@
       changed_when: false
       ignore_errors: true
 
-    - name: Configure GitHub CLI
-      block:
-        - name: Set up GitHub CLI authentication
-          shell: |
-            echo "{{ github_token }}" | gh auth login --with-token
-          when: github_token != ""
+    - name: Configure GitHub CLI authentication
+      shell: |
+        echo "{{ github_token }}" | gh auth login --with-token
+      when: github_token != "" and gh_auth_status.rc != 0
 
+    - name: Configure GitHub CLI settings
+      block:
         - name: Configure git protocol preference
           command: gh config set git_protocol ssh
 
@@ -137,7 +137,6 @@
             - gh alias set prl 'pr list --web' --clobber
             - gh alias set rv 'repo view --web' --clobber
           ignore_errors: true
-      when: gh_auth_status.rc != 0
 
     - name: Show GitHub CLI status
       debug:
