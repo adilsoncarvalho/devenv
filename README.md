@@ -42,6 +42,11 @@ The playbook automates the installation and configuration of development tools a
 │       ├── handlers/    # Handlers for the role
 │       ├── meta/        # Role metadata
 │       ├── tasks/       # Tasks for the role
+│       │   ├── git.yml  # Git installation and configuration tasks
+│       │   ├── gpg.yml  # GPG installation and configuration tasks
+│       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
+│       │   ├── zsh.yml  # Zsh installation and configuration tasks
+│       │   └── fonts.yml # Font installation tasks
 │       ├── templates/   # Jinja2 templates
 │       └── vars/        # Role variables
 ├── .editorconfig        # Editor configuration
@@ -96,9 +101,13 @@ ansible-playbook -i inventory.yml playbook.yml --tags [TAG]
 
 Here is a list with all the tags that we have in this playbook.
 
-| Tag | Description |
-|-----|-------------|
-| `fonts` | Installs and configures JetBrains Mono font (macOS only) |
+| Tag     | Description                                                                 |
+|---------|-----------------------------------------------------------------------------|
+| `fonts` | Installs and configures JetBrains Mono font (macOS only)                    |
+| `gh`    | Installs and configures GitHub CLI with authentication and settings         |
+| `git`   | Installs and configures Git with proper version management                  |
+| `gpg`   | Installs and configures GPG for secure commit signing                       |
+| `zsh`   | Installs and configures Zsh with Oh My Zsh and custom settings              |
 
 ## Local Testing
 
