@@ -86,6 +86,20 @@ To run the playbook locally:
 ansible-playbook -i inventory.yml playbook.yml
 ```
 
+You can also [use tags](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tags.html) to run only parts of the playbook.
+
+```bash
+ansible-playbook -i inventory.yml playbook.yml --tags [TAG]
+```
+
+### Tag List
+
+Here is a list with all the tags that we have in this playbook.
+
+| Tag | Description |
+|-----|-------------|
+| `fonts` | Installs and configures JetBrains Mono font (macOS only) |
+
 ## Local Testing
 
 You can set the following environment variables to avoid being prompted during playbook execution:
