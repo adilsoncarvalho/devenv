@@ -21,17 +21,25 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
+
+    # Checkout
+
     - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    # Setup Python
+    
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.x'
+
+    # Install Ansible
 
     - name: Install Ansible
       run: |
         python -m pip install --upgrade pip
         pip install ansible
+
+    # Run Playbook
 
     - name: Run Playbook
       env:
@@ -40,17 +48,23 @@ jobs:
       run: |
         ansible-playbook -i inventory.yml playbook.yml
 
+    # Verify tasks
+    
+    # git
+
     - name: Verify Git Installation
       run: |
         git --version
-        if [ "${{ runner.os }}" == "macOS" ]; then
-          which git
-        fi
+        which git
+
+    # gh  
 
     - name: Verify GitHub CLI Installation and Auth
       run: |
         gh --version
         gh auth status
+
+    # fonts
 
     - name: Verify JetBrains Mono Font Installation
       if: runner.os == 'macOS'
@@ -62,6 +76,8 @@ jobs:
           exit 1
         fi
 
+    # zsh
+    
     - name: Verify Zsh Installation
       run: |
         zsh --version
