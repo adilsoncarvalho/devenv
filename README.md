@@ -42,6 +42,8 @@ The playbook automates the installation and configuration of development tools a
 │       ├── handlers/    # Handlers for the role
 │       ├── meta/        # Role metadata
 │       ├── tasks/       # Tasks for the role
+│       │   ├── git.yml  # Git installation and configuration tasks
+│       │   └── fonts.yml # Font installation tasks
 │       ├── templates/   # Jinja2 templates
 │       └── vars/        # Role variables
 ├── .editorconfig        # Editor configuration
@@ -99,6 +101,7 @@ Here is a list with all the tags that we have in this playbook.
 | Tag | Description |
 |-----|-------------|
 | `fonts` | Installs and configures JetBrains Mono font (macOS only) |
+| `git` | Installs and configures Git with proper version management |
 
 ## Local Testing
 
