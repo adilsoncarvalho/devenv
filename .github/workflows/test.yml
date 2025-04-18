@@ -64,4 +64,5 @@ jobs:
           cat ~/.oh-my-zsh/oh-my-zsh.sh | head -n 1
         else
           echo "Oh My Zsh is not installed"
-          exit 1 
+          exit 1
+        fi
