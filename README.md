@@ -69,6 +69,26 @@ To run the playbook locally:
 ansible-playbook -i inventory.yml playbook.yml
 ```
 
+## Local Testing
+
+You can set the following environment variables to avoid being prompted during playbook execution:
+
+```bash
+# GitHub Personal Access Token with required scopes
+export GH_TOKEN='your_github_token'
+
+# User information for GPG key generation
+export USER_NAME='Your Name'
+export USER_EMAIL='your.email@example.com'
+```
+
+Then you can run it without any prompt <3
+
+```bash
+# Run the playbook
+ansible-playbook -i inventory.yml playbook.yml
+```
+
 ## Requirements
 
 - Python 3.x
