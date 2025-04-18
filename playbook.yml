@@ -354,4 +354,8 @@
           {% endif %}
           {% else %}
           Zsh is not installed
-          {% endif %} 
+          {% endif %}
+
+    - name: Install JetBrains Mono font
+      include_tasks: roles/common/tasks/fonts.yml
+      tags: fonts
