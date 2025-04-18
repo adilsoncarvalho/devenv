@@ -132,11 +132,32 @@
         - name: Configure aliases
           command: "{{ item }}"
           loop:
-            - gh alias set prc 'pr create --web' --clobber
+            - gh alias set prc 'pr create --web --assignee @me' --clobber
             - gh alias set prv 'pr view --web' --clobber
             - gh alias set prl 'pr list --web' --clobber
             - gh alias set rv 'repo view --web' --clobber
           ignore_errors: true
+
+        - name: Add PR template
+          copy:
+            dest: ~/.config/gh/pr-template.md
+            content: |
+              # Pull Request
+
+              ## Changes
+              {% raw %}
+              {{.Message}}
+              {% endraw %}
+
+              ## Checklist
+              - [ ] Tests passing
+              - [ ] Documentation updated
+              - [ ] Code follows project standards
+            mode: '0644'
+            force: yes
+
+        - name: Configure PR template
+          command: gh config set pr.template ~/.config/gh/pr-template.md
 
     - name: Show GitHub CLI status
       debug:
