@@ -264,4 +264,79 @@
           {% endif %}
           {% else %}
           GitHub CLI has been installed and configured.
+          {% endif %}
+
+    - name: Check if Zsh is installed
+      command: zsh --version
+      register: zsh_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Install Zsh on macOS
+      homebrew:
+        name: zsh
+        state: latest
+      when: ansible_os_family == "Darwin" and zsh_version.rc != 0
+
+    - name: Install Zsh on Ubuntu
+      apt:
+        name: zsh
+        state: latest
+      when: ansible_os_family == "Debian" and zsh_version.rc != 0
+      become: true
+
+    - name: Check if Oh My Zsh is installed
+      stat:
+        path: ~/.oh-my-zsh
+      register: oh_my_zsh
+
+    - name: Install Oh My Zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      when: not oh_my_zsh.stat.exists
+
+    - name: Configure Oh My Zsh plugins
+      lineinfile:
+        path: ~/.zshrc
+        regexp: '^plugins=\(.*\)$'
+        line: 'plugins=(git gh docker docker-compose kubectl helm aws terraform)'
+        create: yes
+      when: oh_my_zsh.stat.exists
+
+    - name: Configure Oh My Zsh theme
+      lineinfile:
+        path: ~/.zshrc
+        regexp: '^ZSH_THEME=.*$'
+        line: 'ZSH_THEME="robbyrussell"'
+        create: yes
+      when: oh_my_zsh.stat.exists
+
+    - name: Add custom aliases
+      blockinfile:
+        path: ~/.zshrc
+        block: |
+          # Custom aliases
+          alias ll='ls -la'
+        create: yes
+      when: oh_my_zsh.stat.exists
+
+    - name: Set Zsh as default shell
+      shell: chsh -s $(which zsh)
+      when: zsh_version.rc == 0 and ansible_env.SHELL != '/bin/zsh'
+      become: true
+      ignore_errors: true
+
+    - name: Show Zsh status
+      debug:
+        msg: |
+          Zsh status:
+          {% if zsh_version.rc == 0 %}
+          Version: {{ zsh_version.stdout }}
+          {% if oh_my_zsh.stat.exists %}
+          Oh My Zsh: Installed
+          {% else %}
+          Oh My Zsh: Not installed
+          {% endif %}
+          {% else %}
+          Zsh is not installed
           {% endif %} 
