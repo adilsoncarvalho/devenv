@@ -50,4 +50,19 @@ jobs:
     - name: Verify GitHub CLI Installation and Auth
       run: |
         gh --version
-        gh auth status 
+        gh auth status
+
+    - name: Verify Zsh Installation
+      run: |
+        zsh --version
+        which zsh
+
+    - name: Verify Oh My Zsh Installation
+      run: |
+        if [ -d ~/.oh-my-zsh ]; then
+          echo "Oh My Zsh is installed"
+          cat ~/.oh-my-zsh/oh-my-zsh.sh | head -n 1
+        else
+          echo "Oh My Zsh is not installed"
+          exit 1
+        fi
