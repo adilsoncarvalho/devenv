@@ -18,6 +18,10 @@
       default: "{{ lookup('env', 'USER_EMAIL') | default(lookup('env', 'USER') + '@users.noreply.github.com') }}"
 
   tasks:
+    - name: Include Zsh tasks
+      include_tasks: roles/common/tasks/zsh.yml
+      tags: zsh
+
     - name: Include Homebrew tasks
       include_tasks: roles/common/tasks/brew.yml
       tags: brew
@@ -30,9 +34,6 @@
 
     - name: Include GitHub CLI tasks
       include_tasks: roles/common/tasks/gh.yml
-
-    - name: Include Zsh tasks
-      include_tasks: roles/common/tasks/zsh.yml
 
     - name: Install JetBrains Mono font
       include_tasks: roles/common/tasks/fonts.yml
