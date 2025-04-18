@@ -101,13 +101,13 @@ ansible-playbook -i inventory.yml playbook.yml --tags [TAG]
 
 Here is a list with all the tags that we have in this playbook.
 
-| Tag | Description |
-|-----|-------------|
-| `fonts` | Installs and configures JetBrains Mono font (macOS only) |
-| `git` | Installs and configures Git with proper version management |
-| `gpg` | Installs and configures GPG for secure commit signing |
-| `gh` | Installs and configures GitHub CLI with authentication and settings |
-| `zsh` | Installs and configures Zsh with Oh My Zsh and custom settings |
+| Tag     | Description                                                                 |
+|---------|-----------------------------------------------------------------------------|
+| `fonts` | Installs and configures JetBrains Mono font (macOS only)                    |
+| `gh`    | Installs and configures GitHub CLI with authentication and settings         |
+| `git`   | Installs and configures Git with proper version management                  |
+| `gpg`   | Installs and configures GPG for secure commit signing                       |
+| `zsh`   | Installs and configures Zsh with Oh My Zsh and custom settings              |
 
 ## Local Testing
 
