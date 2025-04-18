@@ -98,16 +98,6 @@
 
     - name: Generate GPG key if none exists
       block:
-        - name: Debug environment variables
-          debug:
-            msg: |
-              Environment Debug:
-              USER_NAME: {{ lookup('env', 'USER_NAME') }}
-              USER_EMAIL: {{ lookup('env', 'USER_EMAIL') }}
-              user_name: {{ user_name }}
-              user_email: {{ user_email }}
-              Current working directory: {{ lookup('env', 'PWD') }}
-
         - name: Create GPG key configuration file
           copy:
             dest: /tmp/gpg-key-gen.conf
@@ -120,38 +110,10 @@
               %no-protection
               %commit
             mode: '0600'
-          register: gpg_config
-
-        - name: Debug GPG config file
-          debug:
-            msg: |
-              GPG Config File Debug:
-              Path: /tmp/gpg-key-gen.conf
-              Content:
-              {{ lookup('file', '/tmp/gpg-key-gen.conf') }}
-          ignore_errors: yes
-
-        - name: List /tmp directory
-          command: ls -la /tmp/gpg-key-gen.conf
-          register: tmp_file
-          ignore_errors: yes
-
-        - name: Debug /tmp file permissions
-          debug:
-            msg: "{{ tmp_file }}"
 
         - name: Generate GPG key
           command: gpg --batch --generate-key /tmp/gpg-key-gen.conf
           register: gpg_gen_key
-
-        - name: Debug GPG key generation
-          debug:
-            msg: |
-              GPG Generation Debug:
-              Return code: {{ gpg_gen_key.rc | default('N/A') }}
-              Stdout: {{ gpg_gen_key.stdout | default('N/A') }}
-              Stderr: {{ gpg_gen_key.stderr | default('N/A') }}
-          when: gpg_gen_key is defined
 
         - name: Clean up GPG key configuration
           file:
