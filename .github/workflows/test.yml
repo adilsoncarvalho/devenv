@@ -52,6 +52,16 @@ jobs:
         gh --version
         gh auth status
 
+    - name: Verify JetBrains Mono Font Installation
+      if: runner.os == 'macOS'
+      run: |
+        if [ -f "$HOME/Library/Fonts/JetBrainsMono-Regular.ttf" ]; then
+          echo "JetBrains Mono font is installed"
+        else
+          echo "JetBrains Mono font is not installed"
+          exit 1
+        fi
+
     - name: Verify Zsh Installation
       run: |
         zsh --version
