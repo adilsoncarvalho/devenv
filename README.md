@@ -44,6 +44,7 @@ The playbook automates the installation and configuration of development tools a
 │       ├── tasks/       # Tasks for the role
 │       │   ├── git.yml  # Git installation and configuration tasks
 │       │   ├── gpg.yml  # GPG installation and configuration tasks
+│       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
 │       │   └── fonts.yml # Font installation tasks
 │       ├── templates/   # Jinja2 templates
 │       └── vars/        # Role variables
@@ -104,6 +105,7 @@ Here is a list with all the tags that we have in this playbook.
 | `fonts` | Installs and configures JetBrains Mono font (macOS only) |
 | `git` | Installs and configures Git with proper version management |
 | `gpg` | Installs and configures GPG for secure commit signing |
+| `gh` | Installs and configures GitHub CLI with authentication and settings |
 
 ## Local Testing
 
