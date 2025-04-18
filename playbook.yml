@@ -1,6 +1,12 @@
 ---
 - name: Minimal Ansible Playbook
   hosts: all
+  vars_prompt:
+    - name: github_token
+      prompt: "Enter your GitHub Personal Access Token (classic) with 'repo', 'read:org' scopes (press Enter to skip if already configured)"
+      private: yes
+      default: ""
+
   tasks:
     - name: Get Git version info
       command: git --version
@@ -101,12 +107,49 @@
       when: ansible_os_family == "Debian" and gh_version.rc != 0
       become: true
 
+    - name: Check GitHub CLI auth status
+      command: gh auth status
+      register: gh_auth_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Configure GitHub CLI
+      block:
+        - name: Set up GitHub CLI authentication
+          shell: |
+            echo "{{ github_token }}" | gh auth login --with-token
+          when: github_token != ""
+
+        - name: Configure git protocol preference
+          command: gh config set git_protocol ssh
+
+        - name: Configure default editor
+          command: gh config set editor "code --wait"
+
+        - name: Configure default browser
+          command: gh config set browser default
+
+        - name: Configure aliases
+          command: "{{ item }}"
+          loop:
+            - gh alias set prc 'pr create --web' --clobber
+            - gh alias set prv 'pr view --web' --clobber
+            - gh alias set prl 'pr list --web' --clobber
+            - gh alias set rv 'repo view --web' --clobber
+          ignore_errors: true
+      when: gh_auth_status.rc != 0
+
     - name: Show GitHub CLI status
       debug:
         msg: |
           GitHub CLI status:
           {% if gh_version.rc == 0 %}
           Version: {{ gh_version.stdout }}
+          {% if gh_auth_status.rc == 0 %}
+          Authentication: Configured
           {% else %}
-          GitHub CLI has been installed. Please run 'gh auth login' to authenticate.
+          Authentication: Not configured (token required)
+          {% endif %}
+          {% else %}
+          GitHub CLI has been installed and configured.
           {% endif %} 
