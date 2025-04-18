@@ -1,6 +1,6 @@
 # DevEnv Ansible Playbook
 
-This repository contains an Ansible playbook for setting up and maintaining a consistent development environment across macOS and Ubuntu systems.
+This repository contains an [Ansible](https://www.ansible.com/) playbook for setting up and maintaining a consistent development environment across [macOS](https://www.apple.com/macos/) and [Ubuntu](https://ubuntu.com/) systems.
 
 ## Purpose
 
@@ -8,19 +8,19 @@ The playbook automates the installation and configuration of development tools a
 
 ## Current Features
 
-- Git installation and management:
+- [Git](https://git-scm.com/) installation and management:
   - Updates Apple Git via Xcode Command Line Tools on macOS
-  - Installs Git via Homebrew if not present
+  - Installs Git via [Homebrew](https://brew.sh/) if not present
   - Provides status information about the installed Git version
 
 - GitHub CLI installation:
-  - Installs GitHub CLI (gh) via Homebrew on macOS
+  - Installs [GitHub CLI](https://cli.github.com/) (gh) via Homebrew on macOS
   - Installs GitHub CLI via apt on Ubuntu
   - Provides installation status and authentication instructions
 
-- Zsh configuration:
+- [Zsh](https://www.zsh.org/) configuration:
   - Installs Zsh if not present
-  - Installs and configures Oh My Zsh
+  - Installs and configures [Oh My Zsh](https://ohmyz.sh/)
   - Sets up common plugins (git, gh, docker, kubectl, etc.)
   - Configures custom aliases for common commands
   - Sets Zsh as the default shell
@@ -29,24 +29,36 @@ The playbook automates the installation and configuration of development tools a
 
 ```
 .
-├── .github/workflows/   # GitHub Actions workflow configurations
-├── inventory.yml       # Ansible inventory file
-└── playbook.yml       # Main Ansible playbook
+├── .github/
+│   └── workflows/       # GitHub Actions workflow configurations
+├── roles/
+│   └── common/          # Common role for shared functionality
+│       ├── defaults/    # Default variables for the role
+│       ├── files/       # Static files used by the role
+│       ├── handlers/    # Handlers for the role
+│       ├── meta/        # Role metadata
+│       ├── tasks/       # Tasks for the role
+│       ├── templates/   # Jinja2 templates
+│       └── vars/        # Role variables
+├── .editorconfig        # Editor configuration
+├── .gitignore           # Git ignore rules
+├── inventory.yml        # Ansible inventory file
+└── playbook.yml         # Main Ansible playbook
 ```
 
 ## CI/CD
 
 The repository uses GitHub Actions to test the playbook on both Ubuntu and macOS environments. Tests run on:
-- Every push to master
-- Every push to feature branches (feat/**)
-- Pull requests targeting master or feature branches
+- Every push to `master`
+- Every push to feature branches (`feat/**`)
+- Pull requests targeting `master` or feature branches
 
 ## For AI Agents
 
 This repository is AI-friendly and follows these conventions:
 
 ### Commit Messages
-- Uses semantic commit messages (feat:, fix:, ci:, etc.)
+- Uses semantic commit messages (`feat:`, `fix:`, `ci:`, etc.)
 - Each commit message has a clear title and description
 - Descriptions use bullet points for multiple items
 - Add `[skip CI]` to commit messages on commits that only changed the documentation
@@ -60,7 +72,7 @@ This repository is AI-friendly and follows these conventions:
 1. Create a feature branch from master
 2. Make changes and test locally
 3. Push changes and create a PR
-4. Merge to master after CI passes
+4. After the PR gets merged on GitHub, delete the local branch and update `master`
 
 ## Getting Started
 
@@ -81,13 +93,6 @@ export GH_TOKEN='your_github_token'
 # User information for GPG key generation
 export USER_NAME='Your Name'
 export USER_EMAIL='your.email@example.com'
-```
-
-Then you can run it without any prompt <3
-
-```bash
-# Run the playbook
-ansible-playbook -i inventory.yml playbook.yml
 ```
 
 ## Requirements
