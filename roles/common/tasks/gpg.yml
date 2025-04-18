@@ -1,0 +1,95 @@
+---
+- name: Install GPG on macOS
+  homebrew:
+    name: gnupg
+    state: latest
+  when: ansible_os_family == "Darwin"
+  tags: [gpg]
+
+- name: Install GPG on Ubuntu
+  apt:
+    name: gnupg
+    state: latest
+  when: ansible_os_family == "Debian"
+  become: true
+  tags: [gpg]
+
+- name: Get GPG version
+  command: gpg --version
+  register: gpg_version
+  changed_when: false
+  tags: [gpg]
+
+- name: List GPG keys
+  command: gpg --list-secret-keys --keyid-format LONG
+  register: gpg_keys
+  changed_when: false
+  ignore_errors: true
+  tags: [gpg]
+
+- name: Generate GPG key if none exists
+  block:
+    - name: Create GPG key configuration file
+      copy:
+        dest: /tmp/gpg-key-gen.conf
+        content: |
+          Key-Type: RSA
+          Key-Length: 4096
+          Name-Real: {{ user_name }}
+          Name-Email: {{ user_email }}
+          Expire-Date: 0
+          %no-protection
+          %commit
+        mode: '0600'
+
+    - name: Generate GPG key
+      command: gpg --batch --generate-key /tmp/gpg-key-gen.conf
+      register: gpg_gen_key
+
+    - name: Clean up GPG key configuration
+      file:
+        path: /tmp/gpg-key-gen.conf
+        state: absent
+  when: gpg_keys.rc != 0 or gpg_keys.stdout == ""
+  tags: [gpg]
+
+- name: Get GPG key ID
+  shell: gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2
+  register: gpg_key_id
+  changed_when: false
+  tags: [gpg]
+
+- name: Export GPG public key
+  command: gpg --armor --export {{ gpg_key_id.stdout }}
+  register: gpg_public_key
+  changed_when: false
+  when: gpg_key_id.stdout != ""
+  tags: [gpg]
+
+- name: Configure Git to use GPG key
+  command: "{{ item }}"
+  loop:
+    - git config --global user.signingkey {{ gpg_key_id.stdout }}
+    - git config --global commit.gpgsign true
+  when: gpg_key_id.stdout != ""
+  tags: [gpg]
+
+- name: Check if GPG key is on GitHub
+  command: gh gpg-key list
+  register: github_gpg_keys
+  changed_when: false
+  ignore_errors: true
+  tags: [gpg]
+
+- name: Add GPG key to GitHub if not present
+  shell: |
+    echo "{{ gpg_public_key.stdout }}" | gh gpg-key add -
+  register: added_gpg_key
+  when: gpg_key_id.stdout != "" and (github_gpg_keys.rc != 0 or gpg_key_id.stdout not in github_gpg_keys.stdout)
+  tags: [gpg]
+
+- name: Remove GPG key from GitHub in CI environment
+  command: gh gpg-key delete {{ gpg_key_id.stdout }} --confirm
+  when: is_ci and gpg_key_id.stdout != "" and added_gpg_key.changed
+  ignore_errors: true
+  tags: [gpg] 
