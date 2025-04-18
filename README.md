@@ -8,6 +8,10 @@ The playbook automates the installation and configuration of development tools a
 
 ## Current Features
 
+- [Homebrew](https://brew.sh/):
+  - Installs or updates Homebrew
+  - Provides status information about the installed brew version
+
 - [Git](https://git-scm.com/) installation and management:
   - Updates Apple Git via Xcode Command Line Tools on macOS
   - Installs Git via [Homebrew](https://brew.sh/) if not present
@@ -42,6 +46,7 @@ The playbook automates the installation and configuration of development tools a
 │       ├── handlers/    # Handlers for the role
 │       ├── meta/        # Role metadata
 │       ├── tasks/       # Tasks for the role
+│       │   ├── brew.yml  # Homebrew installation and configuration tasks
 │       │   ├── git.yml  # Git installation and configuration tasks
 │       │   ├── gpg.yml  # GPG installation and configuration tasks
 │       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
@@ -103,6 +108,7 @@ Here is a list with all the tags that we have in this playbook.
 
 | Tag     | Description                                                                 |
 |---------|-----------------------------------------------------------------------------|
+| `brew`  | Installs and configures Homebrew                                            |
 | `fonts` | Installs and configures JetBrains Mono font (macOS only)                    |
 | `gh`    | Installs and configures GitHub CLI with authentication and settings         |
 | `git`   | Installs and configures Git with proper version management                  |

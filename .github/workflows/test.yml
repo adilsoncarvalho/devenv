@@ -50,6 +50,13 @@ jobs:
 
     # Verify tasks
     
+    # brew
+
+    - name: Verify Homebrew Installation
+      run: |
+        brew --version
+        which brew
+
     # git
 
     - name: Verify Git Installation
