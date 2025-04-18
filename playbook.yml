@@ -30,10 +30,6 @@
     - name: Include Zsh tasks
       include_tasks: roles/common/tasks/zsh.yml
 
-    - name: Example task
-      debug:
-        msg: "Hello from Ansible!"
-
     - name: Install JetBrains Mono font
       include_tasks: roles/common/tasks/fonts.yml
       tags: fonts
