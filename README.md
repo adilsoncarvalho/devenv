@@ -49,6 +49,7 @@ This repository is AI-friendly and follows these conventions:
 - Uses semantic commit messages (feat:, fix:, ci:, etc.)
 - Each commit message has a clear title and description
 - Descriptions use bullet points for multiple items
+- Add `[skip CI]` to commit messages on commits that only changed the documentation
 
 ### Branch Strategy
 - Main branch: `master`
