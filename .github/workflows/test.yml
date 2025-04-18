@@ -50,4 +50,9 @@ jobs:
     - name: Verify GitHub CLI Installation and Auth
       run: |
         gh --version
-        gh auth status 
+        gh auth status
+
+    - name: Verify Zsh Installation
+      run: |
+        zsh --version
+        which zsh 
