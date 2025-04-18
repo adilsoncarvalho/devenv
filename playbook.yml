@@ -5,9 +5,9 @@
     is_ci: "{{ lookup('env', 'CI') | default(false) | bool }}"
   vars_prompt:
     - name: github_token
-      prompt: "Enter your GitHub Personal Access Token (classic) with 'repo', 'read:org' scopes (press Enter to skip if already configured)"
+      prompt: "Enter your GitHub Personal Access Token (classic) with 'repo', 'read:org', and 'write:gpg_key' scopes (press Enter to skip if already configured)"
       private: yes
-      default: ""
+      default: "{{ lookup('env', 'GH_TOKEN') | default('') }}"
     - name: user_name
       prompt: "Enter your name for GPG key (press Enter to use USER_NAME env var)"
       private: no

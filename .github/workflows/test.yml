@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     env:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
     - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
         USER_NAME: ${{ vars.USER_NAME }}
         USER_EMAIL: ${{ vars.USER_EMAIL }}
       run: |
-        ansible-playbook -i inventory.yml playbook.yml --extra-vars "github_token=${{ github.token }}"
+        ansible-playbook -i inventory.yml playbook.yml
 
     - name: Verify Git Installation
       run: |
@@ -48,8 +48,6 @@ jobs:
         fi
 
     - name: Verify GitHub CLI Installation and Auth
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
       run: |
         gh --version
         gh auth status 
