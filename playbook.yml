@@ -1,0 +1,7 @@
+---
+- name: Minimal Ansible Playbook
+  hosts: all
+  tasks:
+    - name: Example task
+      debug:
+        msg: "Hello from Ansible!" 
