@@ -58,4 +58,55 @@
 
     - name: Example task
       debug:
-        msg: "Hello from Ansible!" 
+        msg: "Hello from Ansible!"
+
+    - name: Check if GitHub CLI is installed
+      command: gh --version
+      register: gh_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Install GitHub CLI on macOS
+      homebrew:
+        name: gh
+        state: latest
+      when: ansible_os_family == "Darwin" and gh_version.rc != 0
+
+    - name: Install GitHub CLI on Ubuntu
+      block:
+        - name: Install required packages
+          apt:
+            name: 
+              - curl
+              - gpg
+            state: present
+            
+        - name: Download GitHub CLI GPG key
+          get_url:
+            url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+            dest: /usr/share/keyrings/githubcli-archive-keyring.gpg
+            mode: '0644'
+
+        - name: Add GitHub CLI apt repository
+          apt_repository:
+            repo: deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+            state: present
+            filename: github-cli
+
+        - name: Install GitHub CLI
+          apt:
+            name: gh
+            state: latest
+            update_cache: yes
+      when: ansible_os_family == "Debian" and gh_version.rc != 0
+      become: true
+
+    - name: Show GitHub CLI status
+      debug:
+        msg: |
+          GitHub CLI status:
+          {% if gh_version.rc == 0 %}
+          Version: {{ gh_version.stdout }}
+          {% else %}
+          GitHub CLI has been installed. Please run 'gh auth login' to authenticate.
+          {% endif %} 
