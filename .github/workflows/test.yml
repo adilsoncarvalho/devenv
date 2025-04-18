@@ -64,6 +64,23 @@ jobs:
         gh --version
         gh auth status
 
+    # gpg
+
+    - name: Verify GPG Installation
+      run: |
+        gpg --version
+        which gpg
+
+    - name: Verify GPG Key Exists
+      run: |
+        if gpg --list-secret-keys --keyid-format LONG | grep -q "sec"; then
+          echo "At least one GPG key exists"
+          gpg --list-secret-keys --keyid-format LONG
+        else
+          echo "No GPG keys found"
+          exit 1
+        fi
+
     # fonts
 
     - name: Verify JetBrains Mono Font Installation
