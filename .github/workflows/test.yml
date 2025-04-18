@@ -34,6 +34,9 @@ jobs:
         pip install ansible
 
     - name: Run Playbook
+      env:
+        USER_NAME: ${{ vars.USER_NAME }}
+        USER_EMAIL: ${{ vars.USER_EMAIL }}
       run: |
         ansible-playbook -i inventory.yml playbook.yml --extra-vars "github_token=${{ github.token }}"
 
