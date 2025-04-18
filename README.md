@@ -25,6 +25,10 @@ The playbook automates the installation and configuration of development tools a
   - Configures custom aliases for common commands
   - Sets Zsh as the default shell
 
+- Font installation:
+  - Installs [JetBrains Mono](https://www.jetbrains.com/lp/mono/) font on macOS
+  - Provides a clean, modern monospace font optimized for coding
+
 ## Repository Structure
 
 ```
