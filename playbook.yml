@@ -30,6 +30,10 @@
       include_tasks: roles/common/tasks/git-user.yml
       tags: git
 
+    - name: Configure Git GPG
+      include_tasks: roles/common/tasks/git-gpg.yml
+      tags: git
+
     - name: Include GitHub CLI tasks
       include_tasks: roles/common/tasks/gh.yml
       tags: gh
