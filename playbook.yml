@@ -38,6 +38,10 @@
       include_tasks: roles/common/tasks/gh.yml
       tags: gh
 
+    - name: Include GitHub GPG tasks
+      include_tasks: roles/common/tasks/gh-gpg.yml
+      tags: gh
+
     - name: Include Zsh tasks
       include_tasks: roles/common/tasks/zsh.yml
       tags: zsh

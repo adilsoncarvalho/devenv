@@ -1,0 +1,28 @@
+# Checks if GitHub has the GPG key. If not, it adds it.
+
+- name: Get GPG key ID
+  shell: gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2
+  register: gpg_key_id
+  changed_when: false
+
+- name: Fail if GPG key ID is empty
+  fail:
+    msg: "GPG key ID is empty. Please generate a GPG key."
+  when: gpg_key_id.stdout == ""
+
+- name: Check if GPG key is on GitHub
+  command: gh gpg-key list
+  register: github_gpg_keys
+  changed_when: false
+  ignore_errors: true
+
+- name: Add GPG key to GitHub if not present
+  shell: |
+    echo "{{ gpg_public_key.stdout }}" | gh gpg-key add -
+  register: added_gpg_key
+  when: gpg_key_id.stdout != "" and (github_gpg_keys.rc != 0 or gpg_key_id.stdout not in github_gpg_keys.stdout)
+
+- name: Remove GPG key from GitHub in CI environment
+  command: gh gpg-key delete {{ gpg_key_id.stdout }} --confirm
+  when: is_ci and gpg_key_id.stdout != "" and added_gpg_key.changed
+  ignore_errors: true
