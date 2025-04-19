@@ -30,6 +30,10 @@
     - name: Include Zsh tasks
       include_tasks: roles/common/tasks/zsh.yml
 
+    - name: Include Oh My Zsh tasks
+      include_tasks: roles/common/tasks/oh_my_zsh.yml
+      tags: oh_my_zsh
+
     - name: Install JetBrains Mono font
       include_tasks: roles/common/tasks/fonts.yml
       tags: fonts
