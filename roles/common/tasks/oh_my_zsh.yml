@@ -1,0 +1,60 @@
+---
+- name: Check if Oh My Zsh is installed
+  stat:
+    path: ~/.oh-my-zsh
+  register: oh_my_zsh
+  tags: [oh_my_zsh]
+
+- name: Install Oh My Zsh
+  shell: |
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  when: not oh_my_zsh.stat.exists
+  register: oh_my_zsh_install
+  failed_when: oh_my_zsh_install.failed
+  tags: [oh_my_zsh]
+
+- name: Configure Oh My Zsh plugins
+  lineinfile:
+    path: ~/.zshrc
+    regexp: '^plugins=\(.*\)$'
+    line: 'plugins=(git gh docker docker-compose kubectl helm aws terraform)'
+    create: yes
+  when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
+  register: plugins_config
+  failed_when: plugins_config.failed
+  tags: [oh_my_zsh]
+
+- name: Configure Oh My Zsh theme
+  lineinfile:
+    path: ~/.zshrc
+    regexp: '^ZSH_THEME=.*$'
+    line: 'ZSH_THEME="robbyrussell"'
+    create: yes
+  when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
+  register: theme_config
+  failed_when: theme_config.failed
+  tags: [oh_my_zsh]
+
+- name: Create custom aliases file
+  copy:
+    dest: ~/.oh-my-zsh/custom/aliases.zsh
+    content: |
+      # Custom aliases
+      alias ll='ls -la'
+      alias k='kubectl'
+    mode: '0644'
+  when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
+  register: aliases_config
+  failed_when: aliases_config.failed
+  tags: [oh_my_zsh]
+
+
+- name: Show Oh My Zsh status
+  debug:
+    msg: |
+      {% if oh_my_zsh.stat.exists or (oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0) %}
+      Oh My Zsh: Installed
+      {% else %}
+      Oh My Zsh: Not installed
+      {% endif %}
+  tags: [oh_my_zsh]

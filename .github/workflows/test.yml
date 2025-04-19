@@ -100,6 +100,8 @@ jobs:
         zsh --version
         which zsh
 
+    # oh_my_zsh
+
     - name: Verify Oh My Zsh Installation
       run: |
         if [ -d ~/.oh-my-zsh ]; then
