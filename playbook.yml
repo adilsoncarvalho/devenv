@@ -20,15 +20,19 @@
   tasks:
     - name: Include Git tasks
       include_tasks: roles/common/tasks/git.yml
+      tags: git
 
     - name: Include GPG tasks
       include_tasks: roles/common/tasks/gpg.yml
+      tags: gpg
 
     - name: Include GitHub CLI tasks
       include_tasks: roles/common/tasks/gh.yml
+      tags: gh
 
     - name: Include Zsh tasks
       include_tasks: roles/common/tasks/zsh.yml
+      tags: zsh
 
     - name: Include Oh My Zsh tasks
       include_tasks: roles/common/tasks/oh_my_zsh.yml
