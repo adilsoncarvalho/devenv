@@ -1,5 +1,5 @@
 ---
-- name: Minimal Ansible Playbook
+- name: DevEnv Ansible Playbook
   hosts: all
   vars:
     is_ci: "{{ lookup('env', 'CI') | default(false) | bool }}"
