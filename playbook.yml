@@ -30,16 +30,8 @@
       include_tasks: roles/common/tasks/git-user.yml
       tags: git
 
-    - name: Configure Git GPG
-      include_tasks: roles/common/tasks/git-gpg.yml
-      tags: git
-
     - name: Include GitHub CLI tasks
       include_tasks: roles/common/tasks/gh.yml
-      tags: gh
-
-    - name: Include GitHub GPG tasks
-      include_tasks: roles/common/tasks/gh-gpg.yml
       tags: gh
 
     - name: Include Zsh tasks
@@ -53,3 +45,9 @@
     - name: Install JetBrains Mono font
       include_tasks: roles/common/tasks/fonts.yml
       tags: fonts
+
+    # Integration tasks
+
+    - name: Run all integration tasks
+      include_tasks: roles/common/tasks/integration/main.yml
+      tags: integration
