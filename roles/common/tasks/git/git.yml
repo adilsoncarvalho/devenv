@@ -41,14 +41,6 @@
       {% endif %}
   tags: git
 
-- name: Ensure Homebrew bin directory is in PATH
-  lineinfile:
-    path: ~/.zshrc
-    line: 'export PATH="/opt/homebrew/bin:$PATH"'
-    create: yes
-  when: is_apple_git
-  tags: git
-
 - name: Get updated Git path
   command: which git
   register: git_path

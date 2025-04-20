@@ -1,0 +1,22 @@
+- name: Homebrew tasks skipped on non-macOS
+  when: ansible_facts['os_family'] != 'Darwin'
+  debug:
+    msg: "Homebrew tasks skipped on non-macOS."
+  tags: integration
+
+- name: Display that the Homebrew tasks are commencing
+  when: ansible_facts['os_family'] == 'Darwin'
+  debug:
+    msg: "Homebrew tasks commencing."
+  tags: integration
+  
+- include_tasks: homebrew.yml
+  when: ansible_facts['os_family'] == 'Darwin'
+  tags:
+    - homebrew
+
+- name: Display that the Homebrew tasks are complete
+  when: ansible_facts['os_family'] == 'Darwin'
+  debug:
+    msg: "Homebrew tasks completed."
+  tags: integration

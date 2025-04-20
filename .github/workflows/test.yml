@@ -57,6 +57,14 @@ jobs:
         git --version
         which git
 
+    # homebrew
+
+    - name: Verify Homebrew Installation
+      if: runner.os == 'macOS'
+      run: |
+        brew --version
+        which brew
+
     # gh  
 
     - name: Verify GitHub CLI Installation and Auth

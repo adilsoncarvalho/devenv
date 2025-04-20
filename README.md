@@ -35,6 +35,7 @@ The playbook automates the installation and configuration of development tools a
 .
 ├── .github/
 │   └── workflows/       # GitHub Actions workflow configurations
+│   └── prompts/         # Prompt guidelines and rules
 ├── roles/
 │   └── common/          # Common role for shared functionality
 │       ├── defaults/    # Default variables for the role
@@ -47,7 +48,18 @@ The playbook automates the installation and configuration of development tools a
 │       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
 │       │   ├── zsh.yml  # Zsh installation and configuration tasks
 │       │   ├── oh_my_zsh.yml # Oh My Zsh installation and configuration tasks
-│       │   └── fonts.yml # Font installation tasks
+│       │   ├── fonts.yml # Font installation tasks
+│       │   ├── git/     # Git-related tasks
+│       │   │   ├── git-user.yml # Git user configuration tasks
+│       │   │   ├── git.yml      # Git installation tasks
+│       │   │   └── main.yml     # Main Git tasks
+│       │   ├── homebrew/ # Homebrew-related tasks
+│       │   │   ├── homebrew.yml # Homebrew installation tasks
+│       │   │   └── main.yml     # Main Homebrew tasks
+│       │   ├── integration/ # Integration tasks
+│       │   │   ├── gh-gpg.yml  # GitHub CLI and GPG integration tasks
+│       │   │   ├── git-gpg.yml # Git and GPG integration tasks
+│       │   │   └── main.yml    # Main integration tasks
 │       ├── templates/   # Jinja2 templates
 │       └── vars/        # Role variables
 ├── .editorconfig        # Editor configuration
@@ -89,6 +101,8 @@ Here is a list with all the tags that we have in this playbook.
 | `gpg`       | Installs and configures GPG for secure commit signing                       |
 | `zsh`       | Installs and configures Zsh with custom settings                            |
 | `oh_my_zsh` | Installs and configures Oh My Zsh with plugins, themes, and aliases         |
+| `homebrew`  | Installs Homebrew package manager                                           |
+| `integration`| Runs integration tasks for Git, GPG, and GitHub CLI                        |
 
 ## Local Testing
 
