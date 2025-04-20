@@ -1,5 +1,6 @@
 # Configures git to use gpg for signing commits and tags
 - name: Configure Git to use GPG for signing
+  tags: integration
   command: "{{ item }}"
   loop:
     - git config --global commit.gpgsign true
