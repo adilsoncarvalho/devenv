@@ -5,12 +5,14 @@
   command: git config --global user.name
   register: git_user_name
   changed_when: false
+  failed_when: false  # Prevent task failure if user name is not set
   tags: git
 
 - name: Check if Git user email is set
   command: git config --global user.email
   register: git_user_email
   changed_when: false
+  failed_when: false  # Prevent task failure if user email is not set
   tags: git
 
 - name: Set Git user name
