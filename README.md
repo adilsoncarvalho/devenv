@@ -33,26 +33,27 @@ The playbook automates the installation and configuration of development tools a
 
 ```
 .
-├── .github/
-│   └── workflows/       # GitHub Actions workflow configurations
-│   └── prompts/         # Prompt guidelines and rules
-├── roles/
+├── ansible.cfg          # Ansible configuration file
+├── inventory.yml        # Ansible inventory file
+├── playbook.yml         # Main Ansible playbook
+├── README.md            # Project documentation
+├── roles/               # Ansible roles directory
 │   └── common/          # Common role for shared functionality
 │       ├── defaults/    # Default variables for the role
 │       ├── files/       # Static files used by the role
 │       ├── handlers/    # Handlers for the role
 │       ├── meta/        # Role metadata
 │       ├── tasks/       # Tasks for the role
-│       │   ├── git.yml  # Git installation and configuration tasks
-│       │   ├── gpg.yml  # GPG installation and configuration tasks
-│       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
-│       │   ├── zsh.yml  # Zsh installation and configuration tasks
-│       │   ├── oh_my_zsh.yml # Oh My Zsh installation and configuration tasks
 │       │   ├── fonts.yml # Font installation tasks
+│       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
+│       │   ├── gpg.yml  # GPG installation and configuration tasks
+│       │   ├── oh_my_zsh.yml # Oh My Zsh installation and configuration tasks
+│       │   ├── zsh.yml  # Zsh installation and configuration tasks
 │       │   ├── git/     # Git-related tasks
 │       │   │   ├── git-user.yml # Git user configuration tasks
-│       │   │   ├── git.yml      # Git installation tasks
-│       │   │   └── main.yml     # Main Git tasks
+│       │   │   ├── macos.yml    # macOS-specific Git tasks
+│       │   │   ├── main.yml     # Main Git tasks
+│       │   │   └── ubuntu.yml   # Ubuntu-specific Git tasks
 │       │   ├── homebrew/ # Homebrew-related tasks
 │       │   │   ├── homebrew.yml # Homebrew installation tasks
 │       │   │   └── main.yml     # Main Homebrew tasks
@@ -62,10 +63,6 @@ The playbook automates the installation and configuration of development tools a
 │       │   │   └── main.yml    # Main integration tasks
 │       ├── templates/   # Jinja2 templates
 │       └── vars/        # Role variables
-├── .editorconfig        # Editor configuration
-├── .gitignore           # Git ignore rules
-├── inventory.yml        # Ansible inventory file
-└── playbook.yml         # Main Ansible playbook
 ```
 
 ## CI/CD
@@ -88,6 +85,9 @@ You can also [use tags](https://docs.ansible.com/ansible/latest/playbook_guide/p
 ```bash
 ansible-playbook -i inventory.yml playbook.yml --tags [TAG]
 ```
+
+>You might get asked for your password as this playbook needs
+>admin permissions for some tasks.
 
 ### Tag List
 
