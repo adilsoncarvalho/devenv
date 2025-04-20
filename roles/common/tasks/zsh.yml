@@ -4,7 +4,7 @@
   register: zsh_version
   changed_when: false
   ignore_errors: true
-  tags: [zsh]
+  tags: zsh
 
 - name: Install Zsh on macOS
   homebrew:
@@ -13,7 +13,7 @@
   when: ansible_os_family == "Darwin" and zsh_version.rc != 0
   register: zsh_install
   failed_when: zsh_install.failed
-  tags: [zsh]
+  tags: zsh
 
 - name: Install Zsh on Ubuntu
   apt:
@@ -23,7 +23,7 @@
   become: true
   register: zsh_install
   failed_when: zsh_install.failed
-  tags: [zsh]
+  tags: zsh
 
 - name: Set Zsh as default shell
   shell: chsh -s $(which zsh)
@@ -32,7 +32,7 @@
   register: chsh_config
   failed_when: chsh_config.rc != 0
   ignore_errors: true
-  tags: [zsh]
+  tags: zsh
 
 - name: Show Zsh status
   debug:
@@ -43,4 +43,4 @@
       {% else %}
       Zsh is not installed
       {% endif %}
-  tags: [zsh]
+  tags: zsh
