@@ -1,30 +1,29 @@
----
 - name: Get Git version info
   command: git --version
   register: git_version
   changed_when: false
   ignore_errors: true
-  tags: [git]
+  tags: git
 
 - name: Check if Git is Apple version
   set_fact:
     is_apple_git: "{{ 'Apple Git' in git_version.stdout }}"
   when: git_version.rc == 0
-  tags: [git]
+  tags: git
 
 - name: Update Xcode Command Line Tools (if Apple Git is present)
   command: xcode-select --install
   when: is_apple_git is defined and is_apple_git
   changed_when: false
   ignore_errors: true
-  tags: [git]
+  tags: git
 
 - name: Install Git using Homebrew (if no Git is present)
   homebrew:
     name: git
     state: latest
   when: git_version.rc != 0
-  tags: [git]
+  tags: git
 
 - name: Show Git status
   debug:
@@ -40,7 +39,7 @@
       {% else %}
       Git is not installed
       {% endif %}
-  tags: [git]
+  tags: git
 
 - name: Ensure Homebrew bin directory is in PATH
   lineinfile:
@@ -48,15 +47,15 @@
     line: 'export PATH="/opt/homebrew/bin:$PATH"'
     create: yes
   when: is_apple_git
-  tags: [git]
+  tags: git
 
 - name: Get updated Git path
   command: which git
   register: git_path
   changed_when: false
-  tags: [git]
+  tags: git
 
 - name: Show Git version
   debug:
     msg: "Using Git: {{ git_path.stdout }} ({{ git_version.stdout }})"
-  tags: [git] 
+  tags: git

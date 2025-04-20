@@ -1,11 +1,16 @@
----
 # Install JetBrains Mono font on macOS
+
+- name: Check if JetBrains Mono font is installed
+  stat:
+    path: "{{ ansible_user_dir }}/Library/Fonts/JetBrainsMono-Regular.ttf"
+  register: jetbrains_mono_font
+
 - name: Create fonts directory if it doesn't exist
   file:
     path: "{{ ansible_user_dir }}/Library/Fonts"
     state: directory
     mode: '0755'
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not jetbrains_mono_font.stat.exists
   tags: fonts
 
 - name: Download JetBrains Mono font
@@ -13,7 +18,7 @@
     url: https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip
     dest: "{{ ansible_user_dir }}/Downloads/JetBrainsMono.zip"
     mode: '0644'
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not jetbrains_mono_font.stat.exists
   tags: fonts
 
 - name: Create JetBrains Mono directory
@@ -21,7 +26,7 @@
     path: "{{ ansible_user_dir }}/Downloads/JetBrainsMono"
     state: directory
     mode: '0755'
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not jetbrains_mono_font.stat.exists
   tags: fonts
 
 - name: Unzip JetBrains Mono font
@@ -29,7 +34,7 @@
     src: "{{ ansible_user_dir }}/Downloads/JetBrainsMono.zip"
     dest: "{{ ansible_user_dir }}/Downloads/JetBrainsMono"
     remote_src: yes
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not jetbrains_mono_font.stat.exists
   tags: fonts
 
 - name: Install JetBrains Mono font
@@ -37,7 +42,7 @@
     find "{{ ansible_user_dir }}/Downloads/JetBrainsMono/fonts/ttf" -name "*.ttf" -exec cp {} "{{ ansible_user_dir }}/Library/Fonts/" \;
   args:
     creates: "{{ ansible_user_dir }}/Library/Fonts/JetBrainsMono-Regular.ttf"
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not jetbrains_mono_font.stat.exists
   tags: fonts
 
 - name: Clean up downloaded files
@@ -47,5 +52,16 @@
   with_items:
     - "{{ ansible_user_dir }}/Downloads/JetBrainsMono.zip"
     - "{{ ansible_user_dir }}/Downloads/JetBrainsMono"
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" and not jetbrains_mono_font.stat.exists
   tags: fonts 
+
+- name: Show JetBrains Mono font status
+  debug:
+    msg: |
+      JetBrains Mono font status:
+      {% if jetbrains_mono_font.stat.exists %}
+      Already installed -- nothing to do
+      {% else %}
+      Font downloaded and installed successfully
+      {% endif %}
+  tags: fonts

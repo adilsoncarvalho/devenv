@@ -46,6 +46,7 @@ The playbook automates the installation and configuration of development tools a
 │       │   ├── gpg.yml  # GPG installation and configuration tasks
 │       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
 │       │   ├── zsh.yml  # Zsh installation and configuration tasks
+│       │   ├── oh_my_zsh.yml # Oh My Zsh installation and configuration tasks
 │       │   └── fonts.yml # Font installation tasks
 │       ├── templates/   # Jinja2 templates
 │       └── vars/        # Role variables
@@ -61,27 +62,6 @@ The repository uses GitHub Actions to test the playbook on both Ubuntu and macOS
 - Every push to `master`
 - Every push to feature branches (`feat/**`)
 - Pull requests targeting `master` or feature branches
-
-## For AI Agents
-
-This repository is AI-friendly and follows these conventions:
-
-### Commit Messages
-- Uses semantic commit messages (`feat:`, `fix:`, `ci:`, etc.)
-- Each commit message has a clear title and description
-- Descriptions use bullet points for multiple items
-- Add `[skip CI]` to commit messages on commits that only changed the documentation
-
-### Branch Strategy
-- Main branch: `master`
-- Feature branches: `feat/**`
-- CI runs on all branches to ensure early feedback
-
-### Development Workflow
-1. Create a feature branch from master
-2. Make changes and test locally
-3. Push changes and create a PR
-4. After the PR gets merged on GitHub, delete the local branch and update `master`
 
 ## Getting Started
 
@@ -101,13 +81,14 @@ ansible-playbook -i inventory.yml playbook.yml --tags [TAG]
 
 Here is a list with all the tags that we have in this playbook.
 
-| Tag     | Description                                                                 |
-|---------|-----------------------------------------------------------------------------|
-| `fonts` | Installs and configures JetBrains Mono font (macOS only)                    |
-| `gh`    | Installs and configures GitHub CLI with authentication and settings         |
-| `git`   | Installs and configures Git with proper version management                  |
-| `gpg`   | Installs and configures GPG for secure commit signing                       |
-| `zsh`   | Installs and configures Zsh with Oh My Zsh and custom settings              |
+| Tag         | Description                                                                 |
+|-------------|-----------------------------------------------------------------------------|
+| `fonts`     | Installs and configures JetBrains Mono font (macOS only)                    |
+| `gh`        | Installs and configures GitHub CLI with authentication and settings         |
+| `git`       | Installs and configures Git with proper version management                  |
+| `gpg`       | Installs and configures GPG for secure commit signing                       |
+| `zsh`       | Installs and configures Zsh with custom settings                            |
+| `oh_my_zsh` | Installs and configures Oh My Zsh with plugins, themes, and aliases         |
 
 ## Local Testing
 
@@ -139,4 +120,24 @@ The GitHub Actions workflow requires a Personal Access Token (PAT) with the foll
 To set up the PAT:
 1. Create a new [Personal Access Token (classic)](https://github.com/settings/tokens) in your GitHub account settings
 2. Select the required scopes mentioned above
-3. Add the token as a repository secret named `GH_TOKEN` in your repository settings 
+3. Add the token as a repository secret named `GH_TOKEN` in your repository settings
+
+## Ansible Output Explanation
+
+When running the Ansible playbook, you may encounter an output summary like the following:
+
+```
+ok=44   changed=6    unreachable=0    failed=0    skipped=28   rescued=0    ignored=0
+```
+
+Here is what each of these terms means:
+
+- **ok**: The number of tasks that were successfully executed without making any changes. These tasks were already in the desired state.
+- **changed**: The number of tasks that made changes to the system. This indicates that Ansible modified something to bring it into the desired state.
+- **unreachable**: The number of hosts that Ansible could not connect to. This could be due to network issues, incorrect inventory configuration, or authentication problems.
+- **failed**: The number of tasks that failed to execute successfully. Failures may require manual intervention or debugging.
+- **skipped**: The number of tasks that were skipped because their conditions were not met. For example, tasks with `when` clauses that evaluated to `false`.
+- **rescued**: The number of tasks that were recovered after a failure using a `rescue` block. This is part of Ansible's error handling mechanism.
+- **ignored**: The number of tasks that failed but were ignored because of the `ignore_errors: yes` directive. These tasks do not stop the playbook execution.
+
+Understanding these outputs can help you debug and optimize your playbook execution.

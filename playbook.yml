@@ -1,5 +1,5 @@
 ---
-- name: Minimal Ansible Playbook
+- name: DevEnv Ansible Playbook
   hosts: all
   vars:
     is_ci: "{{ lookup('env', 'CI') | default(false) | bool }}"
@@ -18,18 +18,33 @@
       default: "{{ lookup('env', 'USER_EMAIL') | default(lookup('env', 'USER') + '@users.noreply.github.com') }}"
 
   tasks:
+    # Git installation and configuration tasks
     - name: Include Git tasks
-      include_tasks: roles/common/tasks/git.yml
+      include_tasks: roles/common/tasks/git/main.yml
+      tags: git
 
     - name: Include GPG tasks
       include_tasks: roles/common/tasks/gpg.yml
+      tags: gpg
 
     - name: Include GitHub CLI tasks
       include_tasks: roles/common/tasks/gh.yml
+      tags: gh
 
     - name: Include Zsh tasks
       include_tasks: roles/common/tasks/zsh.yml
+      tags: zsh
+
+    - name: Include Oh My Zsh tasks
+      include_tasks: roles/common/tasks/oh_my_zsh.yml
+      tags: oh_my_zsh
 
     - name: Install JetBrains Mono font
       include_tasks: roles/common/tasks/fonts.yml
       tags: fonts
+
+    # Integration tasks
+
+    - name: Run all integration tasks
+      include_tasks: roles/common/tasks/integration/main.yml
+      tags: integration

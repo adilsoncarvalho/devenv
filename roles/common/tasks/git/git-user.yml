@@ -1,0 +1,42 @@
+# Checks if git has the correct user name and email.
+# If not, it sets them.
+
+- name: Check if Git user name is set
+  command: git config --global user.name
+  register: git_user_name
+  changed_when: false
+  failed_when: false  # Prevent task failure if user name is not set
+  tags: git
+
+- name: Check if Git user email is set
+  command: git config --global user.email
+  register: git_user_email
+  changed_when: false
+  failed_when: false  # Prevent task failure if user email is not set
+  tags: git
+
+- name: Set Git user name
+  command: git config --global user.name "{{ user_name }}"
+  when: git_user_name.rc != 0 or git_user_name.stdout != user_name
+  tags: git
+
+- name: Set Git user email  
+  command: git config --global user.email "{{ user_email }}"
+  when: git_user_email.rc != 0 or git_user_email.stdout != user_email
+  tags: git
+
+- name: Show Git user configuration
+  debug:
+    msg: |
+      Git user configuration:
+      {% if git_user_name.rc == 0 %}
+      Name: {{ git_user_name.stdout }}
+      {% else %}
+      User name is not set
+      {% endif %}
+      {% if git_user_email.rc == 0 %}
+      Email: {{ git_user_email.stdout }}
+      {% else %}
+      User email is not set
+      {% endif %}
+  tags: git

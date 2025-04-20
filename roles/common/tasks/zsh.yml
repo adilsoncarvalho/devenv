@@ -4,7 +4,7 @@
   register: zsh_version
   changed_when: false
   ignore_errors: true
-  tags: [zsh]
+  tags: zsh
 
 - name: Install Zsh on macOS
   homebrew:
@@ -13,7 +13,7 @@
   when: ansible_os_family == "Darwin" and zsh_version.rc != 0
   register: zsh_install
   failed_when: zsh_install.failed
-  tags: [zsh]
+  tags: zsh
 
 - name: Install Zsh on Ubuntu
   apt:
@@ -23,56 +23,7 @@
   become: true
   register: zsh_install
   failed_when: zsh_install.failed
-  tags: [zsh]
-
-- name: Check if Oh My Zsh is installed
-  stat:
-    path: ~/.oh-my-zsh
-  register: oh_my_zsh
-  tags: [zsh]
-
-- name: Install Oh My Zsh
-  shell: |
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-  when: not oh_my_zsh.stat.exists
-  register: oh_my_zsh_install
-  failed_when: oh_my_zsh_install.failed
-  tags: [zsh]
-
-- name: Configure Oh My Zsh plugins
-  lineinfile:
-    path: ~/.zshrc
-    regexp: '^plugins=\(.*\)$'
-    line: 'plugins=(git gh docker docker-compose kubectl helm aws terraform)'
-    create: yes
-  when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
-  register: plugins_config
-  failed_when: plugins_config.failed
-  tags: [zsh]
-
-- name: Configure Oh My Zsh theme
-  lineinfile:
-    path: ~/.zshrc
-    regexp: '^ZSH_THEME=.*$'
-    line: 'ZSH_THEME="robbyrussell"'
-    create: yes
-  when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
-  register: theme_config
-  failed_when: theme_config.failed
-  tags: [zsh]
-
-- name: Create custom aliases file
-  copy:
-    dest: ~/.oh-my-zsh/custom/aliases.zsh
-    content: |
-      # Custom aliases
-      alias ll='ls -la'
-      alias k='kubectl'
-    mode: '0644'
-  when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
-  register: aliases_config
-  failed_when: aliases_config.failed
-  tags: [zsh]
+  tags: zsh
 
 - name: Set Zsh as default shell
   shell: chsh -s $(which zsh)
@@ -81,7 +32,7 @@
   register: chsh_config
   failed_when: chsh_config.rc != 0
   ignore_errors: true
-  tags: [zsh]
+  tags: zsh
 
 - name: Show Zsh status
   debug:
@@ -89,12 +40,7 @@
       Zsh status:
       {% if zsh_version.rc == 0 %}
       Version: {{ zsh_version.stdout }}
-      {% if oh_my_zsh.stat.exists or (oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0) %}
-      Oh My Zsh: Installed
-      {% else %}
-      Oh My Zsh: Not installed
-      {% endif %}
       {% else %}
       Zsh is not installed
       {% endif %}
-  tags: [zsh] 
+  tags: zsh

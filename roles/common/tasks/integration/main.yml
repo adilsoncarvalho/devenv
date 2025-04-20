@@ -1,0 +1,12 @@
+- name: Display that the integration tasks are commencing
+  debug:
+    msg: "Integration tasks commencing."
+  tags: integration
+
+- import_tasks: git-gpg.yml
+- import_tasks: gh-gpg.yml
+
+- name: Display that the integration tasks are complete
+  debug:
+    msg: "Integration tasks completed."
+  tags: integration
