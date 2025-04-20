@@ -1,0 +1,34 @@
+# Here we have the specific tasks for Ubuntu
+# In Ubuntu, the git version is the one from
+# the official repositories
+
+- name: Update APT package cache
+  apt:
+    update_cache: yes
+  become: yes
+  when: ansible_os_family == "Debian"
+  tags: [git]
+
+- name: Check if Git is installed
+  shell: dpkg -l | grep -w git
+  register: git_installed
+  ignore_errors: true
+  changed_when: false
+  when: ansible_os_family == "Debian"
+  tags: [git]
+
+- name: Install Git if not installed
+  apt:
+    name: git
+    state: present
+  become: yes
+  when: git_installed.rc != 0 and ansible_os_family == "Debian"
+  tags: [git]
+
+- name: Upgrade Git if already installed
+  apt:
+    name: git
+    state: latest
+  become: yes
+  when: git_installed.rc == 0 and ansible_os_family == "Debian"
+  tags: [git]
