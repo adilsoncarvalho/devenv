@@ -1,0 +1,31 @@
+# Here we have the specific tasks for macOS
+# In macOS, the git version is apple git, 
+# which is installed with the xcode command line tools
+
+- name: Check if Xcode Command Line Tools are installed
+  shell: xcode-select -p
+  register: xcode_cli_check
+  changed_when: false
+  failed_when: false
+  tags: [git]
+
+- name: Install Xcode Command Line Tools if not installed
+  shell: |
+    touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    softwareupdate -i "$(softwareupdate -l | grep -B 1 -E 'Command Line Tools' | \
+    awk -F'*' '/\*/ {print $2}' | sed -e 's/^ *//' | head -n 1)"
+    rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+  when: xcode_cli_check.rc != 0
+  become: yes
+  tags: [git]
+
+- name: Update Command Line Tools if already installed
+  shell: |
+    softwareupdate -l | grep -q "Command Line Tools"
+    if [ $? -eq 0 ]; then
+      softwareupdate -i -a
+    fi
+  when: xcode_cli_check.rc == 0
+  become: yes
+  changed_when: true
+  tags: [git]

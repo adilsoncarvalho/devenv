@@ -3,7 +3,10 @@
     msg: "Git tasks commencing."
   tags: integration
   
-- include_tasks: git.yml
+- include_tasks: macos.yml
+  when: ansible_os_family == "Darwin"
+- include_tasks: ubuntu.yml
+  when: ansible_os_family == "Debian"
 - include_tasks: git-user.yml
 
 - name: Display that the Git tasks are complete
