@@ -121,3 +121,23 @@ To set up the PAT:
 1. Create a new [Personal Access Token (classic)](https://github.com/settings/tokens) in your GitHub account settings
 2. Select the required scopes mentioned above
 3. Add the token as a repository secret named `GH_TOKEN` in your repository settings
+
+## Ansible Output Explanation
+
+When running the Ansible playbook, you may encounter an output summary like the following:
+
+```
+ok=44   changed=6    unreachable=0    failed=0    skipped=28   rescued=0    ignored=0
+```
+
+Here is what each of these terms means:
+
+- **ok**: The number of tasks that were successfully executed without making any changes. These tasks were already in the desired state.
+- **changed**: The number of tasks that made changes to the system. This indicates that Ansible modified something to bring it into the desired state.
+- **unreachable**: The number of hosts that Ansible could not connect to. This could be due to network issues, incorrect inventory configuration, or authentication problems.
+- **failed**: The number of tasks that failed to execute successfully. Failures may require manual intervention or debugging.
+- **skipped**: The number of tasks that were skipped because their conditions were not met. For example, tasks with `when` clauses that evaluated to `false`.
+- **rescued**: The number of tasks that were recovered after a failure using a `rescue` block. This is part of Ansible's error handling mechanism.
+- **ignored**: The number of tasks that failed but were ignored because of the `ignore_errors: yes` directive. These tasks do not stop the playbook execution.
+
+Understanding these outputs can help you debug and optimize your playbook execution.
