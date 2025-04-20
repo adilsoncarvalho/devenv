@@ -1,4 +1,3 @@
----
 - name: Get Git version info
   command: git --version
   register: git_version

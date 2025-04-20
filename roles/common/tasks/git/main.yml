@@ -1,0 +1,12 @@
+- name: Display that the Git tasks are commencing
+  debug:
+    msg: "Git tasks commencing."
+  tags: integration
+  
+- include_tasks: git.yml
+- include_tasks: git-user.yml
+
+- name: Display that the Git tasks are complete
+  debug:
+    msg: "Git tasks completed."
+  tags: integration

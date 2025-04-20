@@ -5,23 +5,23 @@
   command: git config --global user.name
   register: git_user_name
   changed_when: false
-  tags: [git]
+  tags: git
 
 - name: Check if Git user email is set
   command: git config --global user.email
   register: git_user_email
   changed_when: false
-  tags: [git]
+  tags: git
 
 - name: Set Git user name
   command: git config --global user.name "{{ user_name }}"
   when: git_user_name.rc != 0 or git_user_name.stdout != user_name
-  tags: [git]
+  tags: git
 
 - name: Set Git user email  
   command: git config --global user.email "{{ user_email }}"
   when: git_user_email.rc != 0 or git_user_email.stdout != user_email
-  tags: [git]
+  tags: git
 
 - name: Show Git user configuration
   debug:
@@ -37,4 +37,4 @@
       {% else %}
       User email is not set
       {% endif %}
-  tags: [git]
+  tags: git
