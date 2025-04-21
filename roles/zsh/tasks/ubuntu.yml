@@ -1,0 +1,23 @@
+- name: Ensure zsh is installed
+  ansible.builtin.apt:
+    name: zsh
+    state: present
+    update_cache: yes
+  become: true
+  when: ansible_os_family == "Debian"
+  tags: zsh
+
+- name: Check current shell
+  ansible.builtin.command: echo $SHELL
+  register: current_shell
+  when: ansible_os_family == "Debian"
+  tags: zsh
+
+- name: Set zsh as default shell if not already
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: /usr/bin/zsh
+  when: current_shell.stdout != "/usr/bin/zsh"
+  become: true
+  when: ansible_os_family == "Debian"
+  tags: zsh

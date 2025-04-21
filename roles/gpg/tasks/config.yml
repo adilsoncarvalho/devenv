@@ -1,31 +1,15 @@
----
-- name: Install GPG on macOS
-  homebrew:
-    name: gnupg
-    state: latest
-  when: ansible_os_family == "Darwin"
-  tags: [gpg]
-
-- name: Install GPG on Ubuntu
-  apt:
-    name: gnupg
-    state: latest
-  when: ansible_os_family == "Debian"
-  become: true
-  tags: [gpg]
-
 - name: Get GPG version
   command: gpg --version
   register: gpg_version
   changed_when: false
-  tags: [gpg]
+  tags: gpg
 
 - name: List GPG keys
   command: gpg --list-secret-keys --keyid-format LONG
   register: gpg_keys
   changed_when: false
   ignore_errors: true
-  tags: [gpg]
+  tags: gpg
 
 - name: Generate GPG key if none exists
   block:
@@ -51,17 +35,17 @@
         path: /tmp/gpg-key-gen.conf
         state: absent
   when: gpg_keys.rc != 0 or gpg_keys.stdout == ""
-  tags: [gpg]
+  tags: gpg
 
 - name: Get GPG key ID
   shell: gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2
   register: gpg_key_id
   changed_when: false
-  tags: [gpg]
+  tags: gpg
 
 - name: Export GPG public key
   command: gpg --armor --export {{ gpg_key_id.stdout }}
   register: gpg_public_key
   changed_when: false
   when: gpg_key_id.stdout != ""
-  tags: [gpg]
+  tags: gpg

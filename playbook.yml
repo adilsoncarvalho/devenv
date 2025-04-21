@@ -17,39 +17,31 @@
       private: no
       default: "{{ lookup('env', 'USER_EMAIL') | default(lookup('env', 'USER') + '@users.noreply.github.com') }}"
 
-  tasks:
-    # Git installation and configuration tasks
-    - name: Include Git tasks
-      include_tasks: roles/common/tasks/git/main.yml
+  roles:
+    # Git installation and configuration
+    - role: git
       tags: git
 
-    # Homebrew installation and configuration tasks
-    - name: Include Homebrew tasks
-      include_tasks: roles/common/tasks/homebrew/main.yml
-      tags: homebrew
+    # GitHub CLI installation and configuration
+    - role: github-cli
+      tags: github-cli
 
-    - name: Include GPG tasks
-      include_tasks: roles/common/tasks/gpg.yml
-      tags: gpg
-
-    - name: Include GitHub CLI tasks
-      include_tasks: roles/common/tasks/gh.yml
-      tags: gh
-
-    - name: Include Zsh tasks
-      include_tasks: roles/common/tasks/zsh.yml
+    # Zsh installation and configuration
+    - role: zsh
       tags: zsh
 
-    - name: Include Oh My Zsh tasks
-      include_tasks: roles/common/tasks/oh_my_zsh.yml
-      tags: oh_my_zsh
+    # Oh My Zsh installation and configuration
+    - role: ohmyzsh
+      tags: ohmyzsh
 
-    - name: Install JetBrains Mono font
-      include_tasks: roles/common/tasks/fonts.yml
+    # Homebrew installation and configuration
+    - role: homebrew
+      tags: homebrew
+
+    # GPG installation and configuration
+    - role: gpg
+      tags: gpg
+
+    # JetBrains Mono font installation
+    - role: jetbrains-mono-font
       tags: fonts
-
-    # Integration tasks
-
-    - name: Run all integration tasks
-      include_tasks: roles/common/tasks/integration/main.yml
-      tags: integration

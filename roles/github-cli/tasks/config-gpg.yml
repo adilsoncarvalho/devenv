@@ -1,33 +1,37 @@
 # Checks if GitHub has the GPG key. If not, it adds it.
 
+- include_role:
+    name: gpg
+  tags: github-cli
+
 - name: Get GPG key ID
-  tags: integration
   shell: gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2
   register: gpg_key_id
   changed_when: false
+  tags: github-cli
 
 - name: Fail if GPG key ID is empty
-  tags: integration
   fail:
     msg: "GPG key ID is empty. Please generate a GPG key."
   when: gpg_key_id.stdout == ""
+  tags: github-cli
 
 - name: Check if GPG key is on GitHub
-  tags: integration
   command: gh gpg-key list
   register: github_gpg_keys
   changed_when: false
   ignore_errors: true
+  tags: github-cli
 
 - name: Add GPG key to GitHub if not present
-  tags: integration
   shell: |
     echo "{{ gpg_public_key.stdout }}" | gh gpg-key add -
   register: added_gpg_key
   when: gpg_key_id.stdout != "" and (github_gpg_keys.rc != 0 or gpg_key_id.stdout not in github_gpg_keys.stdout)
+  tags: github-cli
 
 - name: Remove GPG key from GitHub in CI environment
-  tags: integration
   command: gh gpg-key delete {{ gpg_key_id.stdout }} --confirm
   when: is_ci and gpg_key_id.stdout != "" and added_gpg_key.changed
   ignore_errors: true
+  tags: github-cli

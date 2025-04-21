@@ -11,11 +11,13 @@ The playbook automates the installation and configuration of development tools a
 - [Git](https://git-scm.com/) installation and management:
   - Updates Apple Git via Xcode Command Line Tools on macOS
   - Installs Git via [Homebrew](https://brew.sh/) if not present
+  - Configures Git user and GPG settings
   - Provides status information about the installed Git version
 
 - GitHub CLI installation:
   - Installs [GitHub CLI](https://cli.github.com/) (gh) via Homebrew on macOS
   - Installs GitHub CLI via apt on Ubuntu
+  - Configures GitHub CLI with GPG integration and custom aliases
   - Provides installation status and authentication instructions
 
 - [Zsh](https://www.zsh.org/) configuration:
@@ -29,6 +31,21 @@ The playbook automates the installation and configuration of development tools a
   - Installs [JetBrains Mono](https://www.jetbrains.com/lp/mono/) font on macOS
   - Provides a clean, modern monospace font optimized for coding
 
+- GPG configuration:
+  - Installs and configures GPG for secure commit signing
+  - Sets up GPG integration with Git and GitHub CLI
+  - Provides instructions for generating and managing GPG keys
+
+- Homebrew package management:
+  - Installs [Homebrew](https://brew.sh/) on macOS
+  - Manages Homebrew packages and dependencies
+  - Provides status information about installed packages
+
+- Oh My Zsh customization:
+  - Installs and configures [Oh My Zsh](https://ohmyz.sh/)
+  - Sets up themes, plugins, and aliases for an enhanced shell experience
+  - Provides a streamlined and customizable Zsh environment
+
 ## Repository Structure
 
 ```
@@ -38,31 +55,42 @@ The playbook automates the installation and configuration of development tools a
 ├── playbook.yml         # Main Ansible playbook
 ├── README.md            # Project documentation
 ├── roles/               # Ansible roles directory
-│   └── common/          # Common role for shared functionality
-│       ├── defaults/    # Default variables for the role
-│       ├── files/       # Static files used by the role
-│       ├── handlers/    # Handlers for the role
-│       ├── meta/        # Role metadata
-│       ├── tasks/       # Tasks for the role
-│       │   ├── fonts.yml # Font installation tasks
-│       │   ├── gh.yml   # GitHub CLI installation and configuration tasks
-│       │   ├── gpg.yml  # GPG installation and configuration tasks
-│       │   ├── oh_my_zsh.yml # Oh My Zsh installation and configuration tasks
-│       │   ├── zsh.yml  # Zsh installation and configuration tasks
-│       │   ├── git/     # Git-related tasks
-│       │   │   ├── git-user.yml # Git user configuration tasks
-│       │   │   ├── macos.yml    # macOS-specific Git tasks
-│       │   │   ├── main.yml     # Main Git tasks
-│       │   │   └── ubuntu.yml   # Ubuntu-specific Git tasks
-│       │   ├── homebrew/ # Homebrew-related tasks
-│       │   │   ├── homebrew.yml # Homebrew installation tasks
-│       │   │   └── main.yml     # Main Homebrew tasks
-│       │   ├── integration/ # Integration tasks
-│       │   │   ├── gh-gpg.yml  # GitHub CLI and GPG integration tasks
-│       │   │   ├── git-gpg.yml # Git and GPG integration tasks
-│       │   │   └── main.yml    # Main integration tasks
-│       ├── templates/   # Jinja2 templates
-│       └── vars/        # Role variables
+│   ├── git/             # Git-related tasks
+│   │   ├── tasks/       # Task files for Git configuration
+│   │   │   ├── config-gpg.yml # GPG configuration tasks
+│   │   │   ├── config-user.yml # Git user configuration tasks
+│   │   │   ├── macos.yml    # macOS-specific Git tasks
+│   │   │   ├── main.yml     # Main Git tasks
+│   │   │   └── ubuntu.yml   # Ubuntu-specific Git tasks
+│   ├── github-cli/      # GitHub CLI-related tasks
+│   │   ├── tasks/       # Task files for GitHub CLI configuration
+│   │   │   ├── config-gpg.yml # GPG integration tasks
+│   │   │   ├── config.yml    # General configuration tasks
+│   │   │   ├── macos.yml     # macOS-specific tasks
+│   │   │   ├── main.yml      # Main GitHub CLI tasks
+│   │   │   ├── set-gh-alias.yml # Custom alias configuration
+│   │   │   └── ubuntu.yml    # Ubuntu-specific tasks
+│   ├── gpg/             # GPG-related tasks
+│   │   ├── tasks/       # Task files for GPG configuration
+│   │   │   ├── config.yml    # General configuration tasks
+│   │   │   ├── macos.yml     # macOS-specific tasks
+│   │   │   ├── main.yml      # Main GPG tasks
+│   │   │   └── ubuntu.yml    # Ubuntu-specific tasks
+│   ├── homebrew/        # Homebrew-related tasks
+│   │   ├── tasks/       # Task files for Homebrew configuration
+│   │   │   ├── homebrew.yml  # Homebrew installation tasks
+│   │   │   └── main.yml      # Main Homebrew tasks
+│   ├── jetbrains-mono-font/ # JetBrains Mono font installation
+│   │   ├── tasks/        # Task files for font installation
+│   │   │   └── main.yml      # Main font tasks
+│   ├── ohmyzsh/         # Oh My Zsh-related tasks
+│   │   ├── tasks/       # Task files for Oh My Zsh configuration
+│   │   │   └── main.yml      # Main Oh My Zsh tasks
+│   ├── zsh/             # Zsh-related tasks
+│   │   ├── tasks/       # Task files for Zsh configuration
+│   │   │   ├── macos.yml     # macOS-specific tasks
+│   │   │   ├── main.yml      # Main Zsh tasks
+│   │   │   └── ubuntu.yml    # Ubuntu-specific tasks
 ```
 
 ## CI/CD
@@ -96,13 +124,12 @@ Here is a list with all the tags that we have in this playbook.
 | Tag         | Description                                                                 |
 |-------------|-----------------------------------------------------------------------------|
 | `fonts`     | Installs and configures JetBrains Mono font (macOS only)                    |
-| `gh`        | Installs and configures GitHub CLI with authentication and settings         |
 | `git`       | Installs and configures Git with proper version management                  |
+| `github-cli`| Installs and configures GitHub CLI with authentication and settings         |
 | `gpg`       | Installs and configures GPG for secure commit signing                       |
-| `zsh`       | Installs and configures Zsh with custom settings                            |
-| `oh_my_zsh` | Installs and configures Oh My Zsh with plugins, themes, and aliases         |
 | `homebrew`  | Installs Homebrew package manager                                           |
-| `integration`| Runs integration tasks for Git, GPG, and GitHub CLI                        |
+| `ohmyzsh`   | Installs and configures Oh My Zsh with plugins, themes, and aliases         |
+| `zsh`       | Installs and configures Zsh with custom settings                            |
 
 ## Local Testing
 

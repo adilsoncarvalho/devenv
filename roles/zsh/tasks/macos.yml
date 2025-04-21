@@ -1,9 +1,19 @@
----
+- include_role:
+    name: homebrew
+  when: ansible_os_family == "Darwin"
+  tags: zsh
+
+- include_role:
+    name: gpg
+  when: ansible_os_family == "Darwin"
+  tags: zsh
+
 - name: Check if Zsh is installed
   command: zsh --version
   register: zsh_version
   changed_when: false
   ignore_errors: true
+  when: ansible_os_family == "Darwin"
   tags: zsh
 
 - name: Install Zsh on macOS
@@ -27,7 +37,7 @@
 
 - name: Set Zsh as default shell
   shell: chsh -s $(which zsh)
-  when: zsh_version.rc == 0 and ansible_env.SHELL != '/bin/zsh'
+  when: ansible_os_family == "Debian" and zsh_version.rc == 0 and ansible_env.SHELL != '/bin/zsh'
   become: true
   register: chsh_config
   failed_when: chsh_config.rc != 0
@@ -43,4 +53,5 @@
       {% else %}
       Zsh is not installed
       {% endif %}
+  when: ansible_os_family == "Debian"
   tags: zsh

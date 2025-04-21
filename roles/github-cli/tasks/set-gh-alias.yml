@@ -1,0 +1,11 @@
+- name: Check alias "{{ alias.name }}"
+  command: gh alias get {{ alias.name }}
+  register: alias_result
+  failed_when: false
+  changed_when: false
+  tags: github-cli
+
+- name: Set alias "{{ alias.name }}"
+  command: gh alias set {{ alias.name }} "{{ alias.command }}" --clobber
+  when: alias_result.rc != 0 or alias_result.stdout != alias.command
+  tags: github-cli

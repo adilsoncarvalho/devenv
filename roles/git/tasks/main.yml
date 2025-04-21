@@ -7,7 +7,12 @@
   when: ansible_os_family == "Darwin"
 - include_tasks: ubuntu.yml
   when: ansible_os_family == "Debian"
-- include_tasks: git-user.yml
+
+# Configure the Git user
+- include_tasks: config-user.yml
+
+# Configure Git with GPG key 
+- include_tasks: config-gpg.yml
 
 - name: Display that the Git tasks are complete
   debug:
