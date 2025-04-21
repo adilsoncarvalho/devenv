@@ -1,0 +1,10 @@
+- include_tasks: macos.yml
+  when: ansible_os_family == 'Darwin'
+  tags: gpg
+
+- include_tasks: ubuntu.yml
+  when: ansible_os_family == 'Debian'
+  tags: gpg
+
+- include_tasks: config.yml
+  tags: gpg

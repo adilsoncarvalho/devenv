@@ -1,0 +1,11 @@
+- include_role:
+    name: homebrew
+  when: ansible_os_family == "Darwin"
+  tags: gpg
+
+- name: Install GPG on macOS
+  homebrew:
+    name: gnupg
+    state: latest
+  when: ansible_os_family == "Darwin"
+  tags: gpg

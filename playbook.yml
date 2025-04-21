@@ -38,17 +38,16 @@
     - role: homebrew
       tags: homebrew
 
+    # GPG installation and configuration
+    - role: gpg
+      tags: gpg
+
     # JetBrains Mono font installation
     - role: jetbrains-mono-font
       tags: fonts
 
   tasks:
-    - name: Include GPG tasks
-      include_tasks: roles/common/tasks/gpg.yml
-      tags: gpg
-
     # Integration tasks
-
     - name: Run all integration tasks
       include_tasks: roles/common/tasks/integration/main.yml
       tags: integration
