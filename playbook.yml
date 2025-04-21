@@ -18,13 +18,17 @@
       default: "{{ lookup('env', 'USER_EMAIL') | default(lookup('env', 'USER') + '@users.noreply.github.com') }}"
 
   roles:
+    # Git installation and configuration
+    - role: git
+      tags: git
+
     # Zsh installation and configuration
     - role: zsh
       tags: zsh
 
-    # Git installation and configuration
-    - role: git
-      tags: git
+    # Oh My Zsh installation and configuration
+    - role: ohmyzsh
+      tags: ohmyzsh
 
     # Homebrew installation and configuration
     - role: homebrew
@@ -42,10 +46,6 @@
     - name: Include GitHub CLI tasks
       include_tasks: roles/common/tasks/gh.yml
       tags: gh
-
-    - name: Include Oh My Zsh tasks
-      include_tasks: roles/common/tasks/oh_my_zsh.yml
-      tags: oh_my_zsh
 
     # Integration tasks
 

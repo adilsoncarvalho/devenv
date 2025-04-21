@@ -1,9 +1,16 @@
----
+- name: Ensure zsh is installed
+  include_role:
+    name: zsh
+
+- name: Ensure git is installed
+  include_role:
+    name: git
+
 - name: Check if Oh My Zsh is installed
   stat:
     path: ~/.oh-my-zsh
   register: oh_my_zsh
-  tags: oh_my_zsh
+  tags: ohmyzsh
 
 - name: Install Oh My Zsh
   shell: |
@@ -11,7 +18,7 @@
   when: not oh_my_zsh.stat.exists
   register: oh_my_zsh_install
   failed_when: oh_my_zsh_install.failed
-  tags: oh_my_zsh
+  tags: ohmyzsh
 
 - name: Configure Oh My Zsh plugins
   lineinfile:
@@ -22,7 +29,7 @@
   when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
   register: plugins_config
   failed_when: plugins_config.failed
-  tags: oh_my_zsh
+  tags: ohmyzsh
 
 - name: Configure Oh My Zsh theme
   lineinfile:
@@ -33,7 +40,7 @@
   when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
   register: theme_config
   failed_when: theme_config.failed
-  tags: oh_my_zsh
+  tags: ohmyzsh
 
 - name: Create custom aliases file
   copy:
@@ -46,7 +53,7 @@
   when: oh_my_zsh.stat.exists or oh_my_zsh_install is defined and oh_my_zsh_install.rc == 0
   register: aliases_config
   failed_when: aliases_config.failed
-  tags: oh_my_zsh
+  tags: ohmyzsh
 
 - name: Show Oh My Zsh status
   debug:
@@ -56,4 +63,4 @@
       {% else %}
       Oh My Zsh: Not installed
       {% endif %}
-  tags: oh_my_zsh
+  tags: ohmyzsh
