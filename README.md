@@ -128,7 +128,6 @@ Here is a list with all the tags that we have in this playbook.
 | `github-cli`| Installs and configures GitHub CLI with authentication and settings         |
 | `gpg`       | Installs and configures GPG for secure commit signing                       |
 | `homebrew`  | Installs Homebrew package manager                                           |
-| `integration`| Runs integration tasks for Git, GPG, and GitHub CLI                        |
 | `ohmyzsh`   | Installs and configures Oh My Zsh with plugins, themes, and aliases         |
 | `zsh`       | Installs and configures Zsh with custom settings                            |
 
