@@ -81,8 +81,8 @@ The playbook automates the installation and configuration of development tools a
 │   │   │   ├── homebrew.yml  # Homebrew installation tasks
 │   │   │   └── main.yml      # Main Homebrew tasks
 │   ├── jetbrains-mono-font/ # JetBrains Mono font installation
-│   │   ├── main.yml      # Main font tasks
 │   │   ├── tasks/        # Task files for font installation
+│   │   │   └── main.yml      # Main font tasks
 │   ├── ohmyzsh/         # Oh My Zsh-related tasks
 │   │   ├── tasks/       # Task files for Oh My Zsh configuration
 │   │   │   └── main.yml      # Main Oh My Zsh tasks
