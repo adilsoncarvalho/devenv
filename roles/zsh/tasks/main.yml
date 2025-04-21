@@ -1,0 +1,17 @@
+- name: Display that the Zsh tasks are commencing
+  debug:
+    msg: "Zsh tasks commencing."
+  tags: zsh
+  
+- include_tasks: macos.yml
+  when: ansible_os_family == "Darwin"
+  tags: zsh
+
+- include_tasks: ubuntu.yml
+  when: ansible_os_family == "Debian"
+  tags: zsh
+
+- name: Display that the Zsh tasks are complete
+  debug:
+    msg: "Zsh tasks completed."
+  tags: zsh
