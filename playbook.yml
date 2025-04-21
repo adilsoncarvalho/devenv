@@ -22,12 +22,11 @@
     - role: git
       tags: git
 
-  tasks:
-    # Homebrew installation and configuration tasks
-    - name: Include Homebrew tasks
-      include_tasks: roles/common/tasks/homebrew/main.yml
+    # Homebrew installation and configuration
+    - role: homebrew
       tags: homebrew
 
+  tasks:
     - name: Include GPG tasks
       include_tasks: roles/common/tasks/gpg.yml
       tags: gpg
