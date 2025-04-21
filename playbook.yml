@@ -45,9 +45,3 @@
     # JetBrains Mono font installation
     - role: jetbrains-mono-font
       tags: fonts
-
-  tasks:
-    # Integration tasks
-    - name: Run all integration tasks
-      include_tasks: roles/common/tasks/integration/main.yml
-      tags: integration

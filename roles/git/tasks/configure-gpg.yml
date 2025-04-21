@@ -1,4 +1,8 @@
 # Configures git to use gpg for signing commits and tags
+- include_role:
+    name: gpg
+  tags: github-cli
+
 - name: Configure Git to use GPG for signing
   tags: integration
   command: "{{ item }}"
