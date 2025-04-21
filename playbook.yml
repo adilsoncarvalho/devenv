@@ -26,6 +26,10 @@
     - role: homebrew
       tags: homebrew
 
+    # JetBrains Mono font installation
+    - role: jetbrains-mono-font
+      tags: fonts
+
   tasks:
     - name: Include GPG tasks
       include_tasks: roles/common/tasks/gpg.yml
@@ -42,10 +46,6 @@
     - name: Include Oh My Zsh tasks
       include_tasks: roles/common/tasks/oh_my_zsh.yml
       tags: oh_my_zsh
-
-    - name: Install JetBrains Mono font
-      include_tasks: roles/common/tasks/fonts.yml
-      tags: fonts
 
     # Integration tasks
 
