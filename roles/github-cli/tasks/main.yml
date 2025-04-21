@@ -19,3 +19,7 @@
 # Configure GitHub CLI
 - include_tasks: config.yml
   tags: github-cli
+
+# Configure GitHub CLI with GPG key
+- include_tasks: config-gpg.yml
+  tags: github-cli
