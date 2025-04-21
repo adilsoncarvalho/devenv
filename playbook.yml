@@ -17,12 +17,12 @@
       private: no
       default: "{{ lookup('env', 'USER_EMAIL') | default(lookup('env', 'USER') + '@users.noreply.github.com') }}"
 
-  tasks:
-    # Git installation and configuration tasks
-    - name: Include Git tasks
-      include_tasks: roles/common/tasks/git/main.yml
+  roles:
+    # Git installation and configuration
+    - role: git
       tags: git
 
+  tasks:
     # Homebrew installation and configuration tasks
     - name: Include Homebrew tasks
       include_tasks: roles/common/tasks/homebrew/main.yml
