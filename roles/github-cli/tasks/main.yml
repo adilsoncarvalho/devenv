@@ -1,0 +1,21 @@
+# Check if GitHub CLI is installed
+- name: Check if GitHub CLI is installed
+  command: gh --version
+  register: gh_version
+  changed_when: false
+  ignore_errors: true
+  tags: github-cli
+
+# Install GitHub CLI on macOS
+- include_tasks: macos.yml
+  when: ansible_os_family == "Darwin"
+  tags: github-cli
+
+# Install GitHub CLI on Ubuntu
+- include_tasks: ubuntu.yml
+  when: ansible_os_family == "Debian"
+  tags: github-cli
+
+# Configure GitHub CLI
+- include_tasks: config.yml
+  tags: github-cli

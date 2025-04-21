@@ -1,0 +1,13 @@
+- name: Check if GitHub CLI is installed
+  command: gh --version
+  register: gh_version
+  changed_when: false
+  ignore_errors: true
+  tags: github-cli
+
+- name: Install GitHub CLI on macOS
+  homebrew:
+    name: gh
+    state: latest
+  when: ansible_os_family == "Darwin" and gh_version.rc != 0
+  tags: github-cli

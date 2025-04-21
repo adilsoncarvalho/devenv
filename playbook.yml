@@ -22,6 +22,10 @@
     - role: git
       tags: git
 
+    # GitHub CLI installation and configuration
+    - role: github-cli
+      tags: github-cli
+
     # Zsh installation and configuration
     - role: zsh
       tags: zsh
@@ -42,10 +46,6 @@
     - name: Include GPG tasks
       include_tasks: roles/common/tasks/gpg.yml
       tags: gpg
-
-    - name: Include GitHub CLI tasks
-      include_tasks: roles/common/tasks/gh.yml
-      tags: gh
 
     # Integration tasks
 

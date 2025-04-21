@@ -1,0 +1,111 @@
+- name: Check GitHub CLI auth status
+  command: gh auth status
+  register: gh_auth_status
+  changed_when: false
+  ignore_errors: true
+  tags: github-cli
+
+- name: Configure GitHub CLI authentication
+  shell: |
+    echo "{{ github_token }}" | gh auth login --with-token
+  when: github_token != "" and gh_auth_status.rc != 0
+  tags: github-cli
+
+- name: Configure GitHub CLI settings
+  block:
+    - name: Ensure git protocol is set to SSH
+      command: gh config get git_protocol
+      register: git_protocol
+      changed_when: false
+      failed_when: false
+      tags: github-cli
+
+    - name: Set git protocol to SSH if not set
+      command: gh config set git_protocol ssh
+      when: git_protocol.stdout != 'ssh'
+      tags: github-cli
+
+    - name: Ensure default editor is VS Code
+      command: gh config get editor
+      register: editor_config
+      changed_when: false
+      failed_when: false
+      tags: github-cli
+
+    - name: Set default editor if needed
+      command: gh config set editor "code --wait"
+      when: editor_config.stdout != "code --wait"
+      tags: github-cli
+
+    - name: Determine browser command
+      set_fact:
+        browser_cmd: "{{ 'open' if ansible_os_family == 'Darwin' else 'xdg-open' }}"
+      when: not is_ci
+      tags: github-cli
+
+    - name: Ensure browser is correctly set
+      command: gh config get browser
+      register: browser_config
+      changed_when: false
+      failed_when: false
+      when: not is_ci
+      tags: github-cli
+
+    - name: Set browser if needed
+      command: gh config set browser "{{ browser_cmd }}"
+      when: not is_ci and browser_config.stdout != browser_cmd
+      tags: github-cli
+
+    - name: Ensure GitHub CLI aliases are configured
+      include_tasks: set-gh-alias.yml
+      loop:
+        - { name: prc, command: "pr create --web --assignee @me" }
+        - { name: prv, command: "pr view --web" }
+        - { name: prl, command: "pr list --web" }
+        - { name: rv,  command: "repo view --web" }
+      loop_control:
+        loop_var: alias
+      tags: github-cli
+
+    - name: Add PR template
+      copy:
+        dest: "{{ ansible_env.HOME }}/.config/gh/pr-template.md"
+        content: |
+          # Pull Request
+
+          ## Changes
+          {% raw %}
+          {{.Message}}
+          {% endraw %}
+        mode: '0644'
+        force: yes
+      tags: github-cli
+
+    - name: Check current PR template setting
+      command: gh config get pr.template
+      register: pr_template_config
+      failed_when: false
+      changed_when: false
+      tags: github-cli
+
+    - name: Configure PR template if needed
+      command: gh config set pr.template "{{ ansible_env.HOME }}/.config/gh/pr-template.md"
+      when: pr_template_config.stdout != ansible_env.HOME + '/.config/gh/pr-template.md'
+      tags: github-cli
+  tags: github-cli
+
+- name: Show GitHub CLI status
+  debug:
+    msg: |
+      GitHub CLI status:
+      {% if gh_version.rc == 0 %}
+      Version: {{ gh_version.stdout }}
+      {% if gh_auth_status.rc == 0 %}
+      Authentication: Configured
+      {% else %}
+      Authentication: Not configured (token required)
+      {% endif %}
+      {% else %}
+      GitHub CLI has been installed and configured.
+      {% endif %}
+  tags: github-cli
